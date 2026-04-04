@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+
+{% block title %}Catálogo{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+/* =========================
+CONTENEDOR
+========================= */
+
+.catalog-container{
+margin-top:30px;
+}
+
+/* =========================
+HEADER
+========================= */
+
+.catalog-header{
+margin-bottom:22px;
+}
+
+.catalog-header h1{
+
+font-size:28px;
+
+background:linear-gradient(
+90deg,
+var(--cyan),
+var(--purple)
+);
+
+background-clip:text;
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+margin-bottom:6px;
+
+}
+
+.catalog-header p{
+color:var(--text-light);
+font-size:14px;
+}
+
+/* =========================
+TABLA
+========================= */
+
+.catalog-table{
+
+width:100%;
+
+border-collapse:collapse;
+
+background:white;
+
+color:#0f172a;
+
+border-radius:16px;
+
+overflow:hidden;
+
+box-shadow:0 20px 45px rgba(0,0,0,0.25);
+
+}
+
+.catalog-table th{
+
+background:linear-gradient(
+135deg,
+var(--emerald),
+var(--cyan)
+);
+
+color:white;
+
+padding:14px;
+
+text-align:left;
+
+font-size:14px;
+
+letter-spacing:0.3px;
+
+}
+
+.catalog-table td{
+
+padding:14px;
+
+border-bottom:1px solid #f1f5f9;
+
+font-size:14px;
+
+}
+
+.catalog-table tr:hover{
+
+background:#f5f7fb;
+
+}
+
+/* =========================
+BADGES
+========================= */
+
+.badge-paid{
+
+background:#FFD70022;
+
+color:#a87900;
+
+padding:6px 10px;
+
+border-radius:8px;
+
+font-size:12px;
+
+font-weight:600;
+
+}
+
+.badge-free{
+
+background:#00C85322;
+
+color:#047857;
+
+padding:6px 10px;
+
+border-radius:8px;
+
+font-size:12px;
+
+font-weight:600;
+
+}
+
+/* =========================
+BOTÓN DRIVE
+========================= */
+
+.drive-btn{
+
+padding:8px 14px;
+
+border-radius:8px;
+
+background:linear-gradient(
+135deg,
+var(--purple),
+var(--cyan)
+);
+
+color:white;
+
+text-decoration:none;
+
+font-size:13px;
+
+font-weight:500;
+
+display:inline-block;
+
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+
+transition:all 0.25s ease;
+
+}
+
+.drive-btn:hover{
+
+transform:translateY(-2px);
+
+box-shadow:0 8px 18px rgba(0,0,0,0.28);
+
+}
+
+/* =========================
+SUBTÍTULO
+========================= */
+
+.catalog-subtitle{
+
+margin-top:4px;
+
+font-size:14px;
+
+color:#64748b;
+
+}
+
+/* =========================
+ACCIONES
+========================= */
+
+.actions{
+margin-top:22px;
+}
+
+
+/* =========================
+TABLE WRAPPER
+========================= */
+
+.table-wrapper{
+
+overflow-x:auto;
+
+}
+/* =========================
+BOTÓN VOLVER
+========================= */
+
+.back-link{
+
+display:inline-block;
+
+margin-top:10px;
+
+padding:11px 24px;
+
+text-decoration:none;
+
+color:white;
+
+font-weight:600;
+
+background:linear-gradient(
+135deg,
+var(--emerald),
+var(--cyan)
+);
+
+border-radius:10px;
+
+box-shadow:0 6px 15px rgba(0,0,0,0.2);
+
+transition:all 0.25s ease;
+
+}
+
+.back-link:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 12px 26px rgba(0,0,0,0.25);
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card catalog-container">
+
+<div class="catalog-header">
+
+<h1>📚 Catálogo de productos</h1>
+
+<p class="catalog-subtitle">
+Usuario: <strong>{{ nombre }}</strong>
+</p>
+
+</div>
+
+<div class="table-wrapper">
+
+<table class="table-modern catalog-table">
+
+<tr>
+<th>ID</th>
+<th>Producto</th>
+<th>Precio (S/)</th>
+<th>Descripción</th>
+<th>Disponible</th>
+<th>Acceso</th>
+</tr>
+
+{% for p in productos %}
+
+<tr>
+
+<td>{{ p.id }}</td>
+
+<td><strong>{{ p.nombre }}</strong></td>
+
+<td>S/ {{ "%.2f"|format(p.precio) }}</td>
+
+<td>{{ p.descripcion }}</td>
+
+<td>
+
+{% if p.vendible %}
+<span class="badge-paid">
+💳 De pago
+</span>
+{% else %}
+<span class="badge-free">Gratis</span>
+{% endif %}
+
+</td>
+
+<td>
+
+<a href="{{ p.link }}" target="_blank">
+
+<button class="btn-secondary">
+
+📂 Abrir Drive
+
+</button>
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<div class="actions">
+
+<a href="/dashboard">
+
+<button class="btn-secondary">
+
+🏠 Volver al panel
+
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+{% endblock %}

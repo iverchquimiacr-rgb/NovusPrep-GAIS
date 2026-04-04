@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+
+{% block title %}Crear usuario{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+/* =========================
+CONTENEDOR
+========================= */
+
+.create-container{
+display:flex;
+justify-content:center;
+margin-top:50px;
+}
+
+/* =========================
+CARD
+========================= */
+
+.create-card{
+
+width:420px;
+
+background:white;
+
+color:#0f172a;
+
+padding:36px;
+
+border-radius:18px;
+
+box-shadow:0 20px 45px rgba(0,0,0,0.25);
+
+}
+
+/* =========================
+TÍTULO
+========================= */
+
+.create-card h2{
+
+margin-bottom:22px;
+
+font-size:24px;
+
+background:linear-gradient(
+90deg,
+var(--cyan),
+var(--purple)
+);
+
+background-clip:text;
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+/* =========================
+FORMULARIO
+========================= */
+
+.form-group{
+display:flex;
+flex-direction:column;
+margin-bottom:18px;
+}
+
+.form-group label{
+
+margin-bottom:6px;
+
+font-size:14px;
+
+font-weight:500;
+
+color:#374151;
+
+}
+
+.form-group input,
+.form-group select{
+
+padding:12px;
+
+border-radius:10px;
+
+border:1px solid #d1d5db;
+
+font-size:14px;
+
+transition:all 0.2s ease;
+
+}
+
+/* INPUT FOCUS */
+
+.form-group input:focus,
+.form-group select:focus{
+
+outline:none;
+
+border-color:var(--cyan);
+
+box-shadow:0 0 0 3px rgba(0,212,255,0.18);
+
+}
+
+/* =========================
+HEADER
+========================= */
+
+.create-header{
+margin-bottom:20px;
+}
+
+.create-subtitle{
+
+margin-top:4px;
+
+font-size:14px;
+
+color:#64748b;
+
+}
+
+/* =========================
+BOTÓN CREAR
+========================= */
+
+.submit{
+
+display:inline-block;
+
+margin-top:20px;
+
+padding:12px 26px;
+
+font-weight:600;
+
+color:white;
+
+border:none;
+
+cursor:pointer;
+
+background:linear-gradient(
+135deg,
+var(--emerald),
+var(--cyan)
+);
+
+border-radius:10px;
+
+box-shadow:0 6px 15px rgba(0,0,0,0.2);
+
+transition:all 0.25s ease;
+
+}
+
+.submit:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 12px 26px rgba(0,0,0,0.28);
+
+}
+
+/* =========================
+ACCIONES
+========================= */
+
+.actions{
+
+margin-top:20px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+/* =========================
+BOTÓN VOLVER
+========================= */
+
+.back-link{
+
+display:inline-block;
+
+margin-top:10px;
+
+padding:11px 24px;
+
+text-decoration:none;
+
+color:white;
+
+font-weight:600;
+
+background:linear-gradient(
+135deg,
+var(--emerald),
+var(--cyan)
+);
+
+border-radius:10px;
+
+box-shadow:0 6px 15px rgba(0,0,0,0.2);
+
+transition:all 0.25s ease;
+
+}
+
+.back-link:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 12px 26px rgba(0,0,0,0.25);
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="create-container">
+
+<div class="card create-card">
+
+<div class="create-header">
+
+<h2>👤 Crear nuevo usuario</h2>
+
+<p class="create-subtitle">
+Registrar una nueva cuenta en el sistema
+</p>
+
+</div>
+
+<form method="POST">
+
+<div class="form-group">
+
+<label>Nombre</label>
+
+<input 
+type="text" 
+name="nombre" 
+placeholder="Nombre del usuario"
+required
+>
+
+</div>
+
+<div class="form-group">
+
+<label>Contraseña</label>
+
+<input 
+type="password" 
+name="password" 
+placeholder="Tu contraseña"
+required
+>
+
+</div>
+
+<div class="form-group">
+
+<label>Rol</label>
+
+<select name="rol">
+
+<option value="Usuario">Usuario</option>
+<option value="Admin">Admin</option>
+
+</select>
+
+</div>
+
+<button type="submit" class="btn-primary">
+
+➕ Crear usuario
+
+</button>
+
+</form>
+
+<div class="actions">
+
+<a href="/dashboard">
+
+<button class="btn-secondary">
+
+🏠 Volver al panel
+
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

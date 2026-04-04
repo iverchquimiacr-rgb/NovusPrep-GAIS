@@ -1,0 +1,439 @@
+{% extends "base.html" %}
+
+{% block title %}Pagos del Usuario{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+/* =========================
+CONTENEDOR
+========================= */
+
+.user-payments-container{
+margin-top:30px;
+}
+
+/* =========================
+HEADER
+========================= */
+
+.user-header{
+margin-bottom:22px;
+}
+
+.user-header h1{
+
+font-size:28px;
+
+background:linear-gradient(
+90deg,
+var(--cyan),
+var(--purple)
+);
+
+background-clip:text;
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+margin-bottom:6px;
+
+}
+
+.user-header p{
+color:var(--text-light);
+font-size:14px;
+}
+
+/* =========================
+TABLA
+========================= */
+
+.user-table{
+
+width:100%;
+
+border-collapse:collapse;
+
+background:white;
+
+color:#0f172a;
+
+border-radius:16px;
+
+overflow:hidden;
+
+box-shadow:0 20px 45px rgba(0,0,0,0.25);
+
+margin-bottom:30px;
+
+}
+
+.user-table th{
+
+background:linear-gradient(
+135deg,
+var(--emerald),
+var(--cyan)
+);
+
+color:white;
+
+padding:14px;
+
+text-align:left;
+
+font-size:14px;
+
+letter-spacing:0.3px;
+
+}
+
+.user-table td{
+
+padding:14px;
+
+border-bottom:1px solid #f1f5f9;
+
+font-size:14px;
+
+}
+
+.user-table tr{
+
+transition:all 0.15s ease;
+
+}
+
+.user-table tr:hover{
+
+background:#f8fafc;
+
+transform:scale(1.002);
+
+}
+
+/* =========================
+MONTO
+========================= */
+
+.user-table td:nth-child(3){
+
+font-weight:600;
+
+}
+
+/* =========================
+BADGES
+========================= */
+
+.badge-aprobado{
+
+background:#22C55E22;
+
+color:#166534;
+
+padding:6px 10px;
+
+border-radius:8px;
+
+font-size:12px;
+
+font-weight:600;
+
+}
+
+.badge-pendiente{
+
+background:#FACC1522;
+
+color:#a16207;
+
+padding:6px 10px;
+
+border-radius:8px;
+
+font-size:12px;
+
+font-weight:600;
+
+}
+
+.badge-rechazado{
+
+background:#EF444422;
+
+color:#991b1b;
+
+padding:6px 10px;
+
+border-radius:8px;
+
+font-size:12px;
+
+font-weight:600;
+
+}
+
+/* =========================
+ADELANTOS
+========================= */
+
+.badge-adelanto{
+
+background:#06b6d422;
+
+color:#0e7490;
+
+padding:6px 10px;
+
+border-radius:8px;
+
+font-size:12px;
+
+font-weight:600;
+
+}
+
+/* =========================
+VER COMPROBANTE
+========================= */
+
+.view-btn{
+
+display:inline-block;
+
+padding:7px 13px;
+
+border-radius:8px;
+
+background:linear-gradient(
+135deg,
+var(--purple),
+var(--cyan)
+);
+
+color:white;
+
+text-decoration:none;
+
+font-size:12px;
+
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+
+transition:all 0.25s ease;
+
+}
+
+.view-btn:hover{
+
+transform:translateY(-2px);
+
+box-shadow:0 8px 18px rgba(0,0,0,0.25);
+
+}
+
+/* =========================
+RESUMEN
+========================= */
+
+.summary-card{
+
+background:white;
+
+color:#0f172a;
+
+padding:25px;
+
+border-radius:16px;
+
+box-shadow:0 20px 45px rgba(0,0,0,0.25);
+
+max-width:520px;
+
+}
+
+.summary-card h3{
+
+margin-bottom:14px;
+
+font-size:18px;
+
+}
+
+.summary-card ul{
+list-style:none;
+padding:0;
+}
+
+.summary-card li{
+
+margin-bottom:10px;
+
+font-size:14px;
+
+}
+
+/* =========================
+BOTÓN VOLVER
+========================= */
+
+.back-link{
+
+display:inline-block;
+
+margin-top:20px;
+
+padding:11px 24px;
+
+border:none;
+
+cursor:pointer;
+
+color:white;
+
+font-weight:600;
+
+background:linear-gradient(
+135deg,
+var(--emerald),
+var(--cyan)
+);
+
+border-radius:10px;
+
+box-shadow:0 6px 15px rgba(0,0,0,0.2);
+
+transition:all 0.25s ease;
+
+}
+
+.back-link:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 12px 26px rgba(0,0,0,0.25);
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="user-payments-container">
+
+<div class="user-header">
+
+<h1>Pagos del usuario</h1>
+
+<p>Historial financiero de <strong>{{ usuario }}</strong></p>
+
+</div>
+
+{% if pagos %}
+
+<table class="user-table">
+
+<tr>
+<th>ID</th>
+<th>Fecha</th>
+<th>Monto</th>
+<th>Estado</th>
+<th>Comprobante</th>
+</tr>
+
+{% for p in pagos %}
+
+<tr>
+
+<td>#{{ p.id }}</td>
+
+<td>{{ p.fecha }}</td>
+
+<td>
+
+{% if p.monto < 0 %}
+
+<span class="badge-adelanto">
+Adelanto S/ {{ "%.2f"|format(p.monto) }}
+</span>
+
+{% else %}
+
+S/ {{ "%.2f"|format(p.monto) }}
+
+{% endif %}
+
+</td>
+
+<td>
+
+{% if p.estado == "Aprobado" %}
+<span class="badge-aprobado">Aprobado</span>
+
+{% elif p.estado == "Pendiente" %}
+<span class="badge-pendiente">Pendiente</span>
+
+{% elif p.estado == "Rechazado" %}
+<span class="badge-rechazado">Rechazado</span>
+
+{% else %}
+{{ p.estado }}
+{% endif %}
+
+</td>
+
+<td>
+
+{% if p.comprobante %}
+
+<a href="{{ url_for('descargar_comprobante', filename=p.comprobante) }}" target="_blank" class="view-btn">
+Ver
+</a>
+
+{% else %}
+
+—
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% else %}
+
+<p>Este usuario no tiene pagos registrados.</p>
+
+{% endif %}
+
+<div class="summary-card">
+
+<h3>Resumen de pagos</h3>
+
+<ul>
+
+<li>🟢 Aprobados: {{ resumen.cant_aprobados }} — Total: S/ {{ "%.2f"|format(resumen.total_aprobado) }}</li>
+
+<li>🟡 Pendientes: {{ resumen.cant_pendientes }} — Total: S/ {{ "%.2f"|format(resumen.total_pendiente) }}</li>
+
+<li>🔴 Rechazados: {{ resumen.cant_rechazados }} — Total: S/ {{ "%.2f"|format(resumen.total_rechazado) }}</li>
+
+</ul>
+
+</div>
+
+<br>
+
+<a href="/admin/usuario/{{ user_id }}">
+<button class="back-link">⬅ Volver al perfil</button>
+</a>
+</div>
+
+{% endblock %}

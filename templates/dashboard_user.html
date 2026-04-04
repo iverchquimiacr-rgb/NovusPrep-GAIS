@@ -1,0 +1,451 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Usuario{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+/* =========================
+HEADER
+========================= */
+
+.dashboard-header{
+margin-bottom:35px;
+text-align:center;
+}
+
+.dashboard-header h1{
+
+font-size:34px;
+
+background:linear-gradient(
+90deg,
+var(--cyan),
+var(--purple)
+);
+
+background-clip:text;
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+.welcome-text{
+
+color:var(--text-light);
+font-size:16px;
+margin-top:6px;
+
+}
+
+/* =========================
+GRID
+========================= */
+
+.card-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(230px,1fr));
+
+gap:22px;
+
+margin-top:30px;
+
+}
+
+/* =========================
+CARD BASE
+========================= */
+
+.card{
+
+display:block;
+
+padding:22px;
+
+border-radius:14px;
+
+background:white;
+
+box-shadow:0 8px 22px rgba(0,0,0,0.12);
+
+text-decoration:none;
+
+color:#0f172a;
+
+transition:all 0.25s ease;
+
+}
+
+.card:hover{
+
+transform:translateY(-6px);
+
+box-shadow:0 16px 36px rgba(0,0,0,0.18);
+
+}
+
+.card h3{
+margin-bottom:8px;
+}
+
+.card p{
+font-size:14px;
+opacity:0.75;
+}
+
+/* =========================
+HIGHLIGHT COLORS
+========================= */
+
+.highlight-blue{
+border-left:5px solid #3b82f6;
+}
+
+.highlight-purple{
+border-left:5px solid var(--purple);
+}
+
+.highlight-red{
+border-left:5px solid #ef4444;
+}
+
+.highlight-teal{
+border-left:5px solid #14b8a6;
+}
+
+.highlight-orange{
+border-left:5px solid #f59e0b;
+}
+
+/* =========================
+DASHBOARD GUIDE
+========================= */
+
+.info-extra{
+
+margin-top:16px;
+
+padding-top:14px;
+
+border-top:1px solid rgba(0,0,0,0.08);
+
+font-size:13px;
+
+opacity:0.8;
+
+text-align: center;
+
+}
+
+/* =========================
+DASHBOARD GUIDE
+========================= */
+
+.dashboard-guide{
+
+background:rgba(255,255,255,0.12);
+
+backdrop-filter:blur(10px);
+
+border:1px solid rgba(255,255,255,0.15);
+
+padding:26px;
+
+border-radius:16px;
+
+box-shadow:0 10px 28px rgba(0,0,0,0.12);
+
+margin-top:40px;
+
+margin-bottom:30px;
+
+font-size:14px;
+
+color:white;
+
+text-align:left;
+
+transition:all 0.25s ease;
+
+}
+
+.dashboard-guide ul{
+
+list-style:none;
+
+padding:0;
+
+line-height:1.9;
+
+margin-top:12px;
+
+}
+
+.dashboard-guide h3{
+
+margin-bottom:14px;
+
+font-size:18px;
+
+font-weight:600;
+
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #f59e0b; /* naranja para llamar atención */
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #d97706; /* naranja oscuro al hover */
+    transform: translateY(-2px);
+}
+/* =========================
+INFO BOX
+========================= */
+
+.info-box{
+
+background:rgba(255,255,255,0.08);
+
+border:1px solid rgba(255,255,255,0.08);
+
+padding:22px;
+
+border-radius:14px;
+
+margin-bottom:30px;
+
+color:white;
+
+text-align: center;
+
+}
+
+/* =========================
+CARD HOVER EFFECT
+========================= */
+
+.card[class*="highlight"]{
+
+transition:
+all 0.25s ease,
+border-left-width 0.25s ease,
+filter 0.25s ease;
+
+}
+
+.card[class*="highlight"]:hover{
+
+border-left-width:9px;
+
+filter:brightness(1.08);
+
+box-shadow:0 16px 36px rgba(0,0,0,0.20);
+
+}
+
+/* =========================
+LOGOUT
+========================= */
+
+.logout-container{
+
+margin-top:45px;
+
+text-align:center;
+
+}
+
+.btn-logout{
+
+background:linear-gradient(
+135deg,
+#ff4d4d,
+#dc2626
+);
+
+padding:12px 28px;
+
+border-radius:12px;
+
+color:white;
+
+text-decoration:none;
+
+font-weight:600;
+
+display:inline-block;
+
+transition:all 0.25s ease;
+
+}
+
+.btn-logout:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 12px 28px rgba(0,0,0,0.25);
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+<div class="dashboard-header">
+
+<h1>Panel Usuario</h1>
+
+</div>
+
+<div class="dashboard-summary dashboard-animate">
+
+<h2>Hola {{ nombre }} 👋</h2>
+
+<p>Gestiona tus pagos y revisa tu cuenta desde este panel.</p>
+
+<div class="summary-grid">
+
+<div class="summary-item">
+<strong>Plan</strong><br>
+{% if sin_plan %}
+Sin plan
+{% else %}
+Activo
+{% endif %}
+</div>
+
+<div class="summary-item">
+<strong>Estado</strong><br>
+{% if sin_plan %}
+<span class="status-pending">Pendiente</span>
+{% else %}
+<span class="status-active">Activo</span>
+{% endif %}
+</div>
+
+<div class="summary-item">
+<strong>Panel</strong><br>
+Usuario
+</div>
+
+</div>
+
+</div>
+
+{% if sin_plan %}
+
+<div class="info-box">
+
+<h3>⚠️ Aún no tienes un plan activo</h3>
+
+<p>
+Puedes explorar el sistema, pero para registrar pagos o subir comprobantes primero debes elegir un plan.
+</p>
+<br>
+<a href="/seleccionar_planes" class="btn-secondary">
+Elegir mi plan
+</a>
+
+<div class="info-extra">
+
+Si ya te suscribiste a un plan y este mensaje sigue apareciendo,
+<strong>cierra sesión y vuelve a ingresar</strong> para actualizar tu panel.
+
+</div>
+
+</div>
+
+{% endif %}
+
+<div class="card-grid dashboard-animate">
+
+<a href="/perfil" class="card highlight-blue">
+<h3><span class="card-icon">👤</span> Mi perfil</h3>
+<p>Actualizar información personal</p>
+</a>
+
+{% if sin_plan %}
+
+<a class="card highlight-purple card-disabled">
+<h3><span class="card-icon">💳</span> Registrar pago</h3>
+<p>Debes elegir un plan primero</p>
+</a>
+
+<a class="card highlight-teal card-disabled">
+<h3><span class="card-icon">📤</span> Subir comprobante</h3>
+<p>Debes elegir un plan primero</p>
+</a>
+
+{% else %}
+
+<a href="/registrar_pago" class="card highlight-purple">
+<h3><span class="card-icon">💳</span> Registrar pago</h3>
+<p>Reportar un nuevo pago</p>
+</a>
+
+<a href="/subir_comprobante" class="card highlight-teal">
+<h3><span class="card-icon">📤</span> Subir comprobante</h3>
+<p>Adjuntar comprobante</p>
+</a>
+
+{% endif %}
+
+<a href="/estado_cuenta" class="card highlight-purple">
+<h3><span class="card-icon">📑</span> Estado de cuenta</h3>
+<p>Consultar tu balance</p>
+</a>
+
+<a href="/mis_pagos" class="card highlight-red">
+<h3><span class="card-icon">📋</span> Mis pagos</h3>
+<p>Historial de pagos</p>
+</a>
+
+<a href="/catalogo" class="card highlight-orange">
+<h3><span class="card-icon">📂</span> Catálogo</h3>
+<p>Explorar productos</p>
+</a>
+
+</div>
+
+<div class="dashboard-guide">
+<br>
+<h3>Guía rápida del panel</h3>
+
+<ul>
+<li><strong>Mi perfil:</strong> Para acceder a información relevante (datos generales, carpetas asignadas, estado financiero y resumen de tus pagos).</li>
+<li><strong>Registrar pago:</strong> Para reportar un pago realizado.</li>
+<li><strong>Subir comprobante:</strong> Para adjuntar comprobantes de pago (Muy importante si utilizaste <strong>yape</strong>).</li>
+<li><strong>Estado de cuenta:</strong> Para revisar tu monto base, total pagado y salgo pendiente.</li>
+<li><strong>Mis pagos:</strong> Para ver el historial de todos tus pagos.</li>
+<li><strong>Catálogo:</strong> Para ver los drives disponibles y decidir comprar alguno. El acceso se consigue brindando tu <strong>correo electrónico</strong>.</li>
+</ul>
+
+</div>
+
+<div class="logout-container">
+
+<a href="/logout" class="btn-logout">
+Cerrar sesión
+</a>
+
+</div>
+
+</div>
+
+{% endblock %}

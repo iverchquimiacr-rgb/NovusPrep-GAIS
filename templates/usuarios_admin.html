@@ -1,0 +1,482 @@
+{% extends "base.html" %}
+
+{% block title %}Usuarios{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+/* =========================
+CONTENEDOR
+========================= */
+
+.users-container{
+
+max-width:1100px;
+
+margin:40px auto;
+
+}
+
+/* =========================
+CARD
+========================= */
+
+.users-card{
+
+background:white;
+
+color:#0f172a;
+
+padding:35px;
+
+border-radius:18px;
+
+box-shadow:0 20px 50px rgba(0,0,0,0.25);
+
+}
+
+/* =========================
+TÍTULO
+========================= */
+
+.page-title{
+
+font-size:28px;
+
+margin-bottom:10px;
+
+background:linear-gradient(
+90deg,
+var(--cyan),
+var(--purple)
+);
+
+background-clip:text;
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+/* =========================
+ADMIN
+========================= */
+
+.admin-name{
+
+color:#475569;
+
+margin-bottom:20px;
+
+font-size:15px;
+
+}
+
+/* =========================
+TABLA
+========================= */
+
+.users-table{
+
+width:100%;
+
+border-collapse:collapse;
+
+margin-top:20px;
+
+font-size:14px;
+
+}
+
+/* Header */
+
+.users-table th{
+
+background:#f1f5f9;
+
+color:#0f172a;
+
+padding:12px;
+
+font-weight:600;
+
+border-bottom:2px solid #e2e8f0;
+
+}
+
+/* Celdas */
+
+.users-table td{
+
+padding:12px;
+
+border-bottom:1px solid #e2e8f0;
+
+text-align:center;
+
+}
+
+/* Hover */
+
+.users-table tr:hover{
+
+background:#f8fafc;
+
+}
+
+/* =========================
+BADGES
+========================= */
+
+.badge-activo{
+
+background:#16a34a;
+
+color:white;
+
+padding:5px 10px;
+
+border-radius:8px;
+
+font-size:12px;
+
+font-weight:600;
+
+}
+
+.badge-inactivo{
+
+background:#dc2626;
+
+color:white;
+
+padding:5px 10px;
+
+border-radius:8px;
+
+font-size:12px;
+
+font-weight:600;
+
+}
+
+/* =========================
+BOTÓN PERFIL
+========================= */
+
+.profile-btn{
+
+padding:7px 14px;
+
+border-radius:8px;
+
+background:linear-gradient(
+135deg,
+var(--cyan),
+var(--purple)
+);
+
+color:white;
+
+text-decoration:none;
+
+font-size:13px;
+
+font-weight:600;
+
+display:inline-block;
+
+box-shadow:0 4px 10px rgba(0,0,0,0.15);
+
+transition:all 0.2s ease;
+
+}
+
+.profile-btn:hover{
+
+transform:translateY(-2px);
+
+box-shadow:0 8px 18px rgba(0,0,0,0.25);
+
+}
+
+/* =========================
+TABLE WRAPPER
+========================= */
+
+.table-wrapper{
+
+overflow-x:auto;
+
+}
+
+/* =========================
+BUSCADOR
+========================= */
+
+.search-box{
+
+display:flex;
+
+gap:10px;
+
+margin:20px 0;
+
+}
+
+.search-box input{
+
+flex:1;
+
+padding:10px;
+
+border-radius:8px;
+
+border:1px solid #d1d5db;
+
+font-size:14px;
+
+}
+
+.search-box button{
+
+padding:10px 16px;
+
+border:none;
+
+border-radius:8px;
+
+background:linear-gradient(
+135deg,
+var(--cyan),
+var(--purple)
+);
+
+color:white;
+
+font-weight:600;
+
+cursor:pointer;
+
+}
+
+.search-box button:hover{
+
+opacity:0.9;
+
+}
+
+/* =========================
+HEADER
+========================= */
+
+.users-header{
+
+margin-bottom:20px;
+
+}
+
+/* =========================
+DELETE BUTTON
+========================= */
+
+.delete-btn{
+
+padding:7px 14px;
+
+border-radius:8px;
+
+background:#ef4444;
+
+color:white;
+
+border:none;
+
+font-size:13px;
+
+cursor:pointer;
+
+font-weight:600;
+
+transition:all 0.2s ease;
+
+}
+
+.delete-btn:hover{
+
+transform:translateY(-2px);
+
+box-shadow:0 6px 14px rgba(0,0,0,0.25);
+
+}
+
+/* =========================
+BOTÓN VOLVER
+========================= */
+
+.back-link{
+
+display:inline-block;
+
+margin-top:20px;
+
+padding:11px 24px;
+
+text-decoration:none;
+
+color:white;
+
+font-weight:600;
+
+background:linear-gradient(
+135deg,
+var(--emerald),
+var(--cyan)
+);
+
+border-radius:10px;
+
+box-shadow:0 6px 15px rgba(0,0,0,0.2);
+
+transition:all 0.25s ease;
+
+}
+
+.back-link:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 12px 26px rgba(0,0,0,0.25);
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="users-container">
+
+<div class="card users-card">
+
+<div class="users-header">
+
+<h1 class="page-title">
+👥 Usuarios registrados
+</h1>
+
+<p class="admin-name">
+Administrador: <strong>{{ nombre }}</strong>
+</p>
+<form method="GET" class="search-box">
+
+<input 
+type="text" 
+name="buscar"
+placeholder="Buscar por ID o nombre..."
+value="{{ request.args.get('buscar','') }}"
+>
+
+<button type="submit">
+
+🔎 Buscar
+
+</button>
+
+</form>
+
+</div>
+
+<div class="table-wrapper">
+
+<table class="table-modern users-table">
+
+<tr>
+<th>ID</th>
+<th>Nombre</th>
+<th>Estado</th>
+<th>Tipo de pago</th>
+<th>Carpetas</th>
+<th>Saldo pendiente</th>
+<th>Perfil</th>
+<th>Eliminar</th>
+</tr>
+
+{% for u in usuarios %}
+<tr>
+
+<td>{{ u.id }}</td>
+
+<td>{{ u.nombre }}</td>
+
+<td>
+{% if u.estado == "Activo" %}
+<span class="badge-activo">Activo</span>
+{% else %}
+<span class="badge-inactivo">{{ u.estado }}</span>
+{% endif %}
+</td>
+
+<td>{{ u.tipo_pago }}</td>
+
+<td>{{ u.carpetas }}</td>
+
+<td><strong>S/ {{ "%.2f"|format(u.saldo) }}</strong></td>
+
+<td>
+
+    
+<a href="/admin/usuario/{{ u.id }}">
+
+<button class="btn-secondary">
+
+👤 Ver perfil
+
+</button>
+
+</a>
+</td>
+
+<td>
+
+<form 
+action="/admin/eliminar_usuario/{{ u.id }}" 
+method="POST"
+style="display:inline;"
+onsubmit="return confirm('¿Seguro que quieres eliminar este usuario?')"
+>
+<button
+type="submit"
+class="delete-btn"
+>
+
+❌ Eliminar
+
+</button>
+
+</form>
+
+</td>
+
+</tr>
+{% endfor %}
+
+</table>
+
+</div>
+
+<a href="/dashboard">
+
+<button class="btn-secondary">
+
+🏠 Volver al panel
+
+</button>
+
+</a>
+
+</div>
+</div>
+
+{% endblock %}

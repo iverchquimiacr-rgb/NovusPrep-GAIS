@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithGoogle } from '../firebase';
+import { signInWithGoogle, loginWithEmail, registerWithEmail } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
-import { LogIn } from 'lucide-react';
+import { LogIn, Mail, Lock } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   React.useEffect(() => {
     if (user && profile) {
@@ -33,6 +36,39 @@ export const Login: React.FC = () => {
     }
   };
 
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setError('Por favor, ingresa correo y contraseña.');
+      return;
+    }
+    if (password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+
+    try {
+      setError('');
+      setLoading(true);
+      if (isRegistering) {
+        await registerWithEmail(email, password);
+      } else {
+        await loginWithEmail(email, password);
+      }
+    } catch (error: any) {
+      console.error("Email auth failed", error);
+      if (error.code === 'auth/email-already-in-use') {
+        setError('Este correo ya está registrado.');
+      } else if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+        setError('Correo o contraseña incorrectos.');
+      } else {
+        setError('Error al procesar la solicitud. Intenta nuevamente.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-transparent p-4">
       <div className="max-w-md w-full p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl text-center border border-gray-100 dark:border-gray-700">
@@ -45,7 +81,7 @@ export const Login: React.FC = () => {
           }}
         />
         <p className="text-gray-500 dark:text-gray-400 mb-6">
-          Inicia sesión para acceder a tu cuenta
+          {isRegistering ? 'Crea una cuenta nueva' : 'Inicia sesión para acceder a tu cuenta'}
         </p>
 
         {error && (
@@ -54,11 +90,62 @@ export const Login: React.FC = () => {
           </div>
         )}
         
+        <form onSubmit={handleEmailAuth} className="space-y-4 mb-6 text-left">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Mail className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"
+                placeholder="tu@correo.com"
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contraseña</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Lock className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 bg-[var(--color-brand-cyan)] hover:bg-[var(--color-brand-deep)] text-white font-medium py-3 px-4 rounded-xl transition-all shadow-sm disabled:opacity-70"
+          >
+            {loading ? 'Procesando...' : (isRegistering ? 'Registrarse' : 'Iniciar Sesión')}
+          </button>
+        </form>
+
+        <div className="relative mb-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">O continúa con</span>
+          </div>
+        </div>
+
         <button
           type="button"
           onClick={handleGoogleLogin}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 font-medium py-3 px-4 rounded-xl transition-all shadow-sm disabled:opacity-70 mb-6"
+          className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 font-medium py-3 px-4 rounded-xl transition-all shadow-sm disabled:opacity-70 mb-4"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
@@ -78,8 +165,21 @@ export const Login: React.FC = () => {
               d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
             />
           </svg>
-          {loading ? 'Conectando...' : 'Continuar con Google'}
+          Google
         </button>
+
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {isRegistering ? '¿Ya tienes una cuenta?' : '¿No tienes una cuenta?'}
+          <button 
+            onClick={() => {
+              setIsRegistering(!isRegistering);
+              setError('');
+            }} 
+            className="ml-1 text-[var(--color-brand-cyan)] hover:underline font-medium"
+          >
+            {isRegistering ? 'Inicia sesión' : 'Regístrate'}
+          </button>
+        </p>
       </div>
     </div>
   );

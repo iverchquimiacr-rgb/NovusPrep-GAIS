@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile containing role, subscription details, and account status.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "paymentType": { "type": "string", "enum": ["Semanal", "Mensual", "Unico", "Ninguno"] },
+        "purchasedFolders": { "type": "array", "items": { "type": "string" } },
+        "assignedFolders": { "type": "number" },
+        "baseAmount": { "type": "number" },
+        "paymentConfirmed": { "type": "string", "enum": ["Confirmado", "Pendiente"] },
+        "status": { "type": "string", "enum": ["Activo", "Inactivo"] },
+        "registrationDate": { "type": "string", "format": "date-time" },
+        "lastPaymentDate": { "type": "string", "format": "date-time" },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "mustChoosePlan": { "type": "boolean" },
+        "discountApplied": { "type": "number" }
+      },
+      "required": ["uid", "email", "role", "status"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Record of a payment made by a user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["Pendiente", "Aprobado", "Rechazado"] },
+        "receiptUrl": { "type": "string" },
+        "adminId": { "type": "string" },
+        "processedDate": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "amount", "date", "status"]
+    },
+    "DiscountRequest": {
+      "title": "Discount Request",
+      "description": "Socio-economic survey submitted by a user to request a discount.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "answers": { "type": "object" },
+        "score": { "type": "number" },
+        "status": { "type": "string", "enum": ["Pendiente", "Aprobado", "Rechazado"] },
+        "files": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["userId", "answers", "score", "status"]
+    },
+    "Receipt": {
+      "title": "Receipt",
+      "description": "Generated receipt for an approved payment.",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" }
+      },
+      "required": ["code", "userId", "userName", "amount", "date"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores user profiles."
+    },
+    "/payments/{paymentId}": {
+      "schema": { "$ref": "#/entities/Payment" },
+      "description": "Stores all payment records."
+    },
+    "/discountRequests/{requestId}": {
+      "schema": { "$ref": "#/entities/DiscountRequest" },
+      "description": "Stores discount requests."
+    },
+    "/receipts/{receiptId}": {
+      "schema": { "$ref": "#/entities/Receipt" },
+      "description": "Stores generated receipts."
+    }
+  }
+}

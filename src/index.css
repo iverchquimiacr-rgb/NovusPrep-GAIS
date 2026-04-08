@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-deep: #0A1F44;
+  --color-brand-cyan: #00B4D8;
+  --color-brand-emerald: #009B77;
+  --color-brand-orange: #FF7A00;
+  --color-brand-gold: #F4B400;
+  --color-brand-bg: #E8EDF2;
+}
+
+@layer base {
+  :root {
+    --color-brand-bg: #E8EDF2; /* Darker grayish blue for better contrast with white cards */
+    --color-brand-deep: #0A1F44;
+    --color-text-main: #1e293b;
+    --color-text-muted: #64748b;
+    --color-bg-card: #ffffff; /* Pure white cards */
+    --color-border: #cbd5e1; /* Darker border for visibility */
+    --bg-gradient: radial-gradient(circle at top right, rgba(0, 180, 216, 0.08), transparent 40%),
+                   radial-gradient(circle at bottom left, rgba(244, 180, 0, 0.08), transparent 40%);
+  }
+
+  .dark {
+    --color-brand-bg: #020617; /* Very dark slate for contrast */
+    --color-brand-deep: #e2e8f0; 
+    --color-text-main: #f8fafc; 
+    --color-text-muted: #94a3b8; 
+    --color-bg-card: #1e293b; /* Slate 800 */
+    --color-border: #475569; /* Slate 600 */
+    --bg-gradient: radial-gradient(circle at top right, rgba(0, 180, 216, 0.15), transparent 40%),
+                   radial-gradient(circle at bottom left, rgba(147, 51, 234, 0.15), transparent 40%);
+  }
+}
+
+body {
+  background-color: var(--color-brand-bg);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--color-text-main);
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+@layer components {
+  .card-base {
+    background-color: var(--color-bg-card);
+    border-color: var(--color-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-base:hover {
+    transform: translateY(-4px);
+  }
+
+  .dark .card-base {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  }
+}

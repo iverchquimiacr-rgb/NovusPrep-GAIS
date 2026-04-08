@@ -1,0 +1,168 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId} (matches auth.uid)
+    // Fields:
+    //   - uid: string (required)
+    //   - email: string (required)
+    //   - displayName: string (optional)
+    //   - role: string (required, 'admin' or 'user')
+    //   - paymentType: string (optional, 'Semanal', 'Mensual', 'Unico', 'Ninguno')
+    //   - purchasedFolders: list (optional)
+    //   - assignedFolders: number (optional)
+    //   - baseAmount: number (optional)
+    //   - paymentConfirmed: string (optional, 'Confirmado', 'Pendiente')
+    //   - status: string (required, 'Activo', 'Inactivo')
+    //   - registrationDate: string (optional)
+    //   - lastPaymentDate: string (optional)
+    //   - dueDate: string (optional)
+    //   - mustChoosePlan: boolean (optional)
+    //   - discountApplied: number (optional)
+    //
+    // Collection: payments
+    // Document ID: {paymentId}
+    // Fields:
+    //   - userId: string (required)
+    //   - amount: number (required)
+    //   - date: string (required)
+    //   - status: string (required, 'Pendiente', 'Aprobado', 'Rechazado')
+    //   - receiptUrl: string (optional)
+    //   - adminId: string (optional)
+    //   - processedDate: string (optional)
+    //
+    // Collection: discountRequests
+    // Document ID: {requestId}
+    // Fields:
+    //   - userId: string (required)
+    //   - answers: map (required)
+    //   - score: number (required)
+    //   - status: string (required, 'Pendiente', 'Aprobado', 'Rechazado')
+    //   - files: list (optional)
+    //
+    // Collection: receipts
+    // Document ID: {receiptId}
+    // Fields:
+    //   - code: string (required)
+    //   - userId: string (required)
+    //   - userName: string (required)
+    //   - amount: number (required)
+    //   - date: string (required)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "iverchquimiacr@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function uidUnchanged() {
+      return !('uid' in request.resource.data) || request.resource.data.uid == request.auth.uid;
+    }
+
+    function uidNotModified() {
+      return !('uid' in request.resource.data) || request.resource.data.uid == resource.data.uid;
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return hasRequiredFields(['uid', 'email', 'role', 'status']) &&
+             data.uid is string &&
+             data.email is string &&
+             data.role in ['admin', 'user'] &&
+             data.status in ['Activo', 'Inactivo'];
+    }
+
+    function isValidPayment(data) {
+      return hasRequiredFields(['userId', 'amount', 'date', 'status']) &&
+             data.userId is string &&
+             data.amount is number &&
+             data.date is string &&
+             data.status in ['Pendiente', 'Aprobado', 'Rechazado'];
+    }
+
+    function isValidDiscountRequest(data) {
+      return hasRequiredFields(['userId', 'answers', 'score', 'status']) &&
+             data.userId is string &&
+             data.answers is map &&
+             data.score is number &&
+             data.status in ['Pendiente', 'Aprobado', 'Rechazado'];
+    }
+
+    function isValidReceipt(data) {
+      return hasRequiredFields(['code', 'userId', 'userName', 'amount', 'date']) &&
+             data.code is string &&
+             data.userId is string &&
+             data.userName is string &&
+             data.amount is number &&
+             data.date is string;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && isValidUser(request.resource.data) &&
+                    ((isOwner(userId) && request.resource.data.role == 'user') || isAdmin());
+      allow update: if isAuthenticated() && isValidUser(request.resource.data) &&
+                    ((isOwner(userId) && request.resource.data.role == resource.data.role) || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated() && (request.auth.uid == resource.data.userId || isAdmin());
+      allow create: if isAuthenticated() && isValidPayment(request.resource.data) &&
+                    ((request.auth.uid == request.resource.data.userId && request.resource.data.status == 'Pendiente') || isAdmin());
+      allow update: if isAuthenticated() && isValidPayment(request.resource.data) && isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /discountRequests/{requestId} {
+      allow read: if isAuthenticated() && (request.auth.uid == resource.data.userId || isAdmin());
+      allow create: if isAuthenticated() && isValidDiscountRequest(request.resource.data) &&
+                    ((request.auth.uid == request.resource.data.userId && request.resource.data.status == 'Pendiente') || isAdmin());
+      allow update: if isAuthenticated() && isValidDiscountRequest(request.resource.data) && isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /receipts/{receiptId} {
+      allow read: if isAuthenticated() && (request.auth.uid == resource.data.userId || isAdmin());
+      allow create: if isAdmin() && isValidReceipt(request.resource.data);
+      allow update: if isAdmin() && isValidReceipt(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /settings/{settingId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}

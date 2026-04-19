@@ -29,7 +29,10 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({ user: null, profile: null, loading: true });
 
-const DEFAULT_ADMIN_EMAIL = "iverchquimiacr@gmail.com";
+const ADMIN_EMAILS = [
+  "iverchquimiacr@gmail.com",
+  "castroaquisesebastian@gmail.com"
+];
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -43,7 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const docRef = doc(db, 'users', firebaseUser.uid);
         const docSnap = await getDoc(docRef);
         
-        const isAdminEmail = firebaseUser.email === DEFAULT_ADMIN_EMAIL;
+        const isAdminEmail = firebaseUser.email ? ADMIN_EMAILS.includes(firebaseUser.email.toLowerCase()) : false;
         
         if (docSnap.exists()) {
           const data = docSnap.data() as UserProfile;

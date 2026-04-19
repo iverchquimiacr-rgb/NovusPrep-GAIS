@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { PRODUCTS } from '../data/products';
 import { ArrowLeft, Moon, Sun, ExternalLink, Folder } from 'lucide-react';
+import { getFolderIcon } from '../utils/iconMap';
 
 export const ExplorarCarpetas: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
@@ -52,14 +53,19 @@ export const ExplorarCarpetas: React.FC = () => {
               key={product.id}
               className="card-base p-6 rounded-2xl border border-[var(--color-border)] shadow-sm hover:shadow-md hover:border-[var(--color-brand-cyan)] transition-all flex flex-col"
             >
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-bold text-[var(--color-text-main)]">{product.nombre}</h3>
+              <div className="flex justify-between items-start mb-4 gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-[var(--color-brand-cyan)]/10 text-[var(--color-brand-cyan)] shrink-0">
+                    {getFolderIcon(product.nombre, "w-6 h-6")}
+                  </div>
+                  <h3 className="text-lg font-bold text-[var(--color-text-main)] leading-tight">{product.nombre}</h3>
+                </div>
                 {product.vendible ? (
-                  <span className="inline-block bg-blue-50 dark:bg-blue-900/20 text-[var(--color-brand-cyan)] font-bold px-3 py-1 rounded-lg text-sm whitespace-nowrap">
+                  <span className="inline-block bg-blue-50 dark:bg-blue-900/20 text-[var(--color-brand-cyan)] font-bold px-3 py-1.5 rounded-lg text-sm whitespace-nowrap">
                     S/. {product.precio.toFixed(2)}
                   </span>
                 ) : (
-                  <span className="inline-block bg-green-50 dark:bg-green-900/20 text-[var(--color-brand-emerald)] font-bold px-3 py-1 rounded-lg text-sm whitespace-nowrap">
+                  <span className="inline-block bg-green-50 dark:bg-green-900/20 text-[var(--color-brand-emerald)] font-bold px-3 py-1.5 rounded-lg text-sm whitespace-nowrap">
                     GRATIS
                   </span>
                 )}

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -6,6 +6,7 @@ import { db } from '../firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { PLANS, PRODUCTS, Plan } from '../data/products';
 import { Check, ArrowRight, Package, Moon, Sun, ArrowLeft, AlertTriangle, X } from 'lucide-react';
+import { getFolderIcon } from '../utils/iconMap';
 
 export const Catalog: React.FC = () => {
   const { user, profile } = useAuth();
@@ -18,6 +19,8 @@ export const Catalog: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessNotice, setShowSuccessNotice] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  
+  const foldersRef = useRef<HTMLDivElement>(null);
 
   const vendibleFolders = useMemo(() => PRODUCTS.filter(p => p.vendible && p.id !== 1), []);
 
@@ -26,6 +29,14 @@ export const Catalog: React.FC = () => {
       navigate('/dashboard');
     }
   }, [profile, navigate]);
+
+  useEffect(() => {
+    if (selectedPlan === 'Personalizado' && foldersRef.current) {
+      setTimeout(() => {
+        foldersRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [selectedPlan]);
 
   const handleFolderToggle = (folderId: number) => {
     setSelectedFolders(prev => {
@@ -178,32 +189,39 @@ export const Catalog: React.FC = () => {
 
         {/* Sección de Carpetas para Plan Personalizado */}
         {selectedPlan === 'Personalizado' && (
-          <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="text-2xl font-bold text-[var(--color-text-main)] mb-2 flex items-center gap-2">
+          <div ref={foldersRef} className="max-w-5xl mx-auto mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-24">
+            <h2 className="text-2xl font-bold text-[var(--color-text-main)] mb-2 flex items-center justify-center gap-2">
               <Package className="w-6 h-6 text-[var(--color-brand-orange)]" />
               Selecciona tus Carpetas (Máx. 4)
             </h2>
-            <p className="text-[var(--color-text-muted)] mb-6">Elige las carpetas específicas que deseas comprar. El precio total se calculará automáticamente.</p>
+            <p className="text-[var(--color-text-muted)] text-center mb-8 max-w-2xl mx-auto">Elige las carpetas específicas que deseas comprar. El precio total se calculará automáticamente al confirmar.</p>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex flex-wrap justify-center gap-6">
               {vendibleFolders.map((folder) => {
                 const isSelected = selectedFolders.includes(folder.id);
                 return (
                   <div 
                     key={folder.id} 
                     onClick={() => handleFolderToggle(folder.id)}
-                    className={`card-base p-5 rounded-xl border-2 cursor-pointer transition-all ${isSelected ? 'border-[var(--color-brand-cyan)] bg-blue-50/50 dark:bg-blue-900/10' : 'border-transparent hover:border-gray-300 dark:hover:border-gray-700'}`}
+                    className={`card-base p-6 rounded-2xl border-2 w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] cursor-pointer transition-all ${isSelected ? 'border-[var(--color-brand-cyan)] bg-blue-50/50 dark:bg-blue-900/10 shadow-[0_0_20px_rgba(6,182,212,0.15)] scale-[1.02]' : 'border-transparent hover:border-[var(--color-brand-cyan)]/30 hover:scale-[1.02]'}`}
                   >
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-semibold text-[var(--color-text-main)] pr-4">{folder.nombre}</h4>
-                      <div className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 ${isSelected ? 'bg-[var(--color-brand-cyan)] border-[var(--color-brand-cyan)]' : 'border-gray-300 dark:border-gray-600'}`}>
-                        {isSelected && <Check className="w-3 h-3 text-white" />}
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`p-3 rounded-xl ${isSelected ? 'bg-[var(--color-brand-cyan)] text-white' : 'bg-gray-100 dark:bg-gray-800 text-[var(--color-brand-cyan)]'}`}>
+                          {getFolderIcon(folder.nombre, "w-6 h-6")}
+                        </div>
+                        <h4 className="font-semibold text-lg text-[var(--color-text-main)] pr-2 leading-tight">{folder.nombre}</h4>
+                      </div>
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 mt-1 transition-colors ${isSelected ? 'bg-[var(--color-brand-cyan)] border-[var(--color-brand-cyan)]' : 'border-gray-300 dark:border-gray-600'}`}>
+                        {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
                       </div>
                     </div>
-                    <p className="text-xs text-[var(--color-text-muted)] mt-1 mb-3 line-clamp-2" title={folder.descripcion}>{folder.descripcion}</p>
-                    <span className="inline-block bg-orange-50 dark:bg-orange-900/20 text-[var(--color-brand-orange)] font-medium px-3 py-1 rounded-lg text-sm">
-                      S/. {folder.precio.toFixed(2)}
-                    </span>
+                    <p className="text-sm text-[var(--color-text-muted)] mt-2 mb-4 line-clamp-3" title={folder.descripcion}>{folder.descripcion}</p>
+                    <div className="flex justify-between items-center mt-auto">
+                      <span className="inline-block bg-orange-50 dark:bg-orange-900/20 text-[var(--color-brand-orange)] font-bold px-3 py-1.5 rounded-lg text-sm">
+                        S/. {folder.precio.toFixed(2)}
+                      </span>
+                    </div>
                   </div>
                 );
               })}

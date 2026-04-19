@@ -7,6 +7,7 @@ import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/f
 import { PRODUCTS } from '../data/products';
 import { LogOut, User, CreditCard, Folder, FileText, Moon, Sun, Shield, Lock, Tag, ShoppingCart, X, AlertTriangle, ExternalLink, Bell, CheckCircle, XCircle } from 'lucide-react';
 import { AIAssistantWidget } from '../components/AIAssistantWidget';
+import { getFolderIcon } from '../utils/iconMap';
 
 interface Notification {
   id: string;
@@ -92,15 +93,18 @@ export const Dashboard: React.FC = () => {
     setNotifications(prev => {
       const filtered = prev.filter(n => n.type !== type);
       const combined = [...filtered, ...newItems].sort((a, b) => {
-        const dateA = a.date?.toMillis?.() || 0;
-        const dateB = b.date?.toMillis?.() || 0;
+        const dateA = a.date ? new Date(a.date).getTime() : 0;
+        const dateB = b.date ? new Date(b.date).getTime() : 0;
         return dateB - dateA;
       }).slice(0, 5); // Keep top 5 latest
       
       // Calculate unread based on localStorage
       const lastSeen = localStorage.getItem('lastSeenNotifications');
       const lastSeenTime = lastSeen ? parseInt(lastSeen) : 0;
-      const unread = combined.filter(n => (n.date?.toMillis?.() || 0) > lastSeenTime).length;
+      const unread = combined.filter(n => {
+        const nTime = n.date ? new Date(n.date).getTime() : 0;
+        return nTime > lastSeenTime;
+      }).length;
       setUnreadCount(unread);
       
       return combined;
@@ -151,7 +155,9 @@ export const Dashboard: React.FC = () => {
                 >
                   <Bell className="w-5 h-5" />
                   {unreadCount > 0 && (
-                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[var(--color-bg-card)]"></span>
+                    <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-[var(--color-bg-card)]">
+                      {unreadCount}
+                    </span>
                   )}
                 </button>
                 
@@ -183,7 +189,7 @@ export const Dashboard: React.FC = () => {
                                     }
                                   </p>
                                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    {notif.date?.toDate ? notif.date.toDate().toLocaleDateString() : 'Reciente'}
+                                    {notif.date ? new Date(notif.date).toLocaleDateString() : 'Reciente'}
                                   </p>
                                 </div>
                               </div>
@@ -323,14 +329,14 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-8 card-base rounded-2xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-[var(--color-text-main)] mb-4">Acciones Rápidas</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="mt-12 mb-4 text-center">
+          <h2 className="text-lg font-bold text-[var(--color-text-main)] mb-6">Acciones Rápidas</h2>
+          <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
             <button 
               onClick={() => navigate('/carpetas')}
-              className="flex flex-col items-center justify-center p-4 rounded-xl border border-[var(--color-border)] hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all duration-300 group"
+              className="card-base shadow-sm flex flex-col items-center justify-center p-6 rounded-2xl border border-[var(--color-border)] hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:bg-blue-50/50 dark:hover:bg-blue-900/20 w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1rem)] max-w-[280px] transition-all duration-300 group"
             >
-              <Folder className="w-8 h-8 text-[var(--color-text-muted)] group-hover:text-blue-500 mb-2 transition-colors" />
+              <Folder className="w-8 h-8 text-[var(--color-text-muted)] group-hover:text-blue-500 mb-3 transition-colors" />
               <span className="text-sm font-medium text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]">
                 Explorar Carpetas
               </span>
@@ -339,9 +345,9 @@ export const Dashboard: React.FC = () => {
             {needsPlan && (
               <button 
                 onClick={() => navigate('/catalog')}
-                className="flex flex-col items-center justify-center p-4 rounded-xl border border-[var(--color-border)] hover:border-purple-400 hover:shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:bg-purple-50/50 dark:hover:bg-purple-900/20 transition-all duration-300 group"
+                className="card-base shadow-sm flex flex-col items-center justify-center p-6 rounded-2xl border border-[var(--color-border)] hover:border-purple-400 hover:shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:bg-purple-50/50 dark:hover:bg-purple-900/20 w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1rem)] max-w-[280px] transition-all duration-300 group"
               >
-                <ShoppingCart className="w-8 h-8 text-[var(--color-text-muted)] group-hover:text-purple-500 mb-2 transition-colors" />
+                <ShoppingCart className="w-8 h-8 text-[var(--color-text-muted)] group-hover:text-purple-500 mb-3 transition-colors" />
                 <span className="text-sm font-medium text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]">
                   Elegir Plan
                 </span>
@@ -351,10 +357,10 @@ export const Dashboard: React.FC = () => {
             <button 
               onClick={() => !needsPlan && navigate('/registrar-pago')}
               disabled={needsPlan}
-              className={`flex flex-col items-center justify-center p-4 rounded-xl border border-[var(--color-border)] transition-all duration-300 group
+              className={`card-base shadow-sm flex flex-col items-center justify-center p-6 rounded-2xl border border-[var(--color-border)] w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1rem)] max-w-[280px] transition-all duration-300 group
                 ${needsPlan ? 'opacity-50 cursor-not-allowed' : 'hover:border-cyan-400 hover:shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:bg-cyan-50/50 dark:hover:bg-cyan-900/20'}`}
             >
-              <CreditCard className={`w-8 h-8 mb-2 transition-colors ${needsPlan ? 'text-gray-400' : 'text-[var(--color-text-muted)] group-hover:text-cyan-500'}`} />
+              <CreditCard className={`w-8 h-8 mb-3 transition-colors ${needsPlan ? 'text-gray-400' : 'text-[var(--color-text-muted)] group-hover:text-cyan-500'}`} />
               <span className={`text-sm font-medium ${needsPlan ? 'text-gray-400' : 'text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]'}`}>
                 Registrar Pago
               </span>
@@ -362,17 +368,17 @@ export const Dashboard: React.FC = () => {
 
             <button 
               onClick={() => setShowDiscountWarning(true)}
-              className="flex flex-col items-center justify-center p-4 rounded-xl border border-[var(--color-border)] hover:border-orange-400 hover:shadow-[0_0_15px_rgba(249,115,22,0.3)] hover:bg-orange-50/50 dark:hover:bg-orange-900/20 transition-all duration-300 group"
+              className="card-base shadow-sm flex flex-col items-center justify-center p-6 rounded-2xl border border-[var(--color-border)] hover:border-orange-400 hover:shadow-[0_0_15px_rgba(249,115,22,0.3)] hover:bg-orange-50/50 dark:hover:bg-orange-900/20 w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1rem)] max-w-[280px] transition-all duration-300 group"
             >
-              <Tag className="w-8 h-8 text-[var(--color-text-muted)] group-hover:text-orange-500 mb-2 transition-colors" />
+              <Tag className="w-8 h-8 text-[var(--color-text-muted)] group-hover:text-orange-500 mb-3 transition-colors" />
               <span className="text-sm font-medium text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]">Solicitar Descuento</span>
             </button>
 
             <button 
               onClick={() => navigate('/mis-comprobantes')}
-              className="flex flex-col items-center justify-center p-4 rounded-xl border border-[var(--color-border)] hover:border-emerald-400 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all duration-300 group"
+              className="card-base shadow-sm flex flex-col items-center justify-center p-6 rounded-2xl border border-[var(--color-border)] hover:border-emerald-400 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1rem)] max-w-[280px] transition-all duration-300 group"
             >
-              <FileText className="w-8 h-8 mb-2 text-[var(--color-text-muted)] group-hover:text-emerald-500 transition-colors" />
+              <FileText className="w-8 h-8 mb-3 text-[var(--color-text-muted)] group-hover:text-emerald-500 transition-colors" />
               <span className="text-sm font-medium text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]">
                 Mis Comprobantes
               </span>
@@ -549,7 +555,12 @@ export const Dashboard: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {userFolders.map((folder) => (
                       <div key={folder.id} className="card-base p-4 rounded-xl border border-[var(--color-border)] flex flex-col">
-                        <h4 className="font-bold text-[var(--color-text-main)] mb-2">{folder.nombre}</h4>
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400">
+                            {getFolderIcon(folder.nombre, "w-5 h-5")}
+                          </div>
+                          <h4 className="font-bold text-[var(--color-text-main)] leading-tight">{folder.nombre}</h4>
+                        </div>
                         <p className="text-sm text-[var(--color-text-muted)] mb-4 flex-1 line-clamp-3" title={folder.descripcion}>
                           {folder.descripcion}
                         </p>

@@ -113,9 +113,6 @@ export const RegistrarPago: React.FC = () => {
           </div>
 
             <div className="flex flex-col gap-3 print:hidden mt-6">
-              <p className="text-sm text-[var(--color-text-muted)] italic text-center mb-2">
-                Si deseas guardar este comprobante, por favor toma una captura de pantalla.
-              </p>
               <button 
                 onClick={() => navigate('/dashboard')}
                 className="w-full bg-[var(--color-brand-cyan)] hover:bg-[var(--color-brand-deep)] text-white px-4 py-2 rounded-xl font-medium transition-colors"

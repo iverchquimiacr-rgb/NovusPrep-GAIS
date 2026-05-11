@@ -295,76 +295,135 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 ## Ciclo Ceprunsa quintos (S/.7)
 
 ### Anato 1
+- [Teoría] Ácidos nucleicos
 - [Teoría] Bioelementos
 - [Teoría] Biomoléculas
+- [Teoría] Lípidos
+- [Teoría] Membrana celular
+- [Teoría] Proteínas
 
 ### Aritmética
 - [Teoría] Cuatro operaciones
+- [Teoría] Divisibilidad
 - [Teoría] Habilidad operativa
+- [Teoría] MCM y MCD
+- [Teoría] Números primos
 - [Teoría] Potenciación y radicación
 
 ### Biología
 - [Teoría] Biología como ciencia
 - [Teoría] Características de los seres vivos
+- [Teoría] Clasificación de los seres vivos
 - [Teoría] Historia de la biología y sus ramas
 - [Teoría] Niveles de organización
 - [Teoría] Reino monera
+- [Teoría] Reino protista
+- [Teoría] Reino plantae
+- [Teoría] Teorías de la evolución
+- [Teoría] Teorías del origen de la vida
+- [Teoría] Virus
 
 ### Física
+- [Teoría] Cinemática
+- [Teoría] Electrostática
+- [Teoría] Estática - Momento de una fuerza
 - [Teoría] Vectores
 
 ### Geografía
+- [Teoría] 8 pisos altitudinales
 - [Teoría] Continentes
+- [Teoría] Mar peruano
+- [Teoría] Relieve amazónico
+- [Teoría] Relieve andino
+- [Teoría] Relieve costero
 
 ### Geometría
 - [Teoría] Ángulos
+- [Teoría] Líneas notables en el triángulo
+- [Teoría] Semejanza de triángulos
+- [Teoría] Triángulos
 - [Teoría] Triángulos rectángulos notables
 
 ### Historia
 - [Teoría] Culturas preincas
 - [Teoría] Caral
 - [Teoría] Chavín
+- [Teoría] Chimú
+- [Teoría] Nazca
+- [Teoría] Tiwanaku Wari
 - [Teoría] División histórica del Perú
 - [Teoría] Poblamiento americano
 
 ### Lenguaje
+- [Teoría] Adjetivo
+- [Teoría] Artículo
+- [Teoría] Determinantes
 - [Teoría] La palabra
 - [Teoría] Sustantivo
 
 ### Lógica
 - [Teoría] Conectores y principios lógicos
+- [Teoría] Def., propos., conectores
+- [Teoría] Form. del pensam., argumentos, dialéctica y princ. formal.
+- [Teoría] Formalización
 - [Teoría] Lenguaje formal y leyes de la dialéctica
+- [Teoría] Modalidad
 
 ### Mates 1
+- [Teoría] Funciones
+- Dominio
 - [Teoría] Inecuaciones
+- [Teoría] Inec. de segundo grado
 - [Teoría] Reglas para elevar al cuadrado y sacar valor absoluto
 - [Teoría] Reglas para invertir
 
 ### Mates 2
 - [Teoría] Ecuaciones de primer grado
 - [Teoría] Ecuaciones de segundo grado
+- [Teoría] Ecuaciones exponenciales
+- [Teoría] Polinomios
+- [Teoría] Sistema de ecuaciones
 - [Teoría] Teoría de exponentes
 
 ### Psicología
+- [Teoría] Afectividad
+- [Teoría] Factores de protección
+- [Teoría] Orientación vocacional e identidad
 - [Teoría] Proyecto de vida y FODA
 - [Teoría] Psicología como ciencia
+- [Teoría] Motivación
 
 ### Química
+- [Teoría] Átomo
+- [Teoría] Funciones inorgánicas
+- [Teoría] Hidróxido
+- [Teoría] Óxidos
 - [Teoría] Método científico
 - [Teoría] Modelos atómicos
+- [Teoría] Valencias y estados de oxidación
 - [Teoría] Química como ciencia
 
 ### Raz Matemático
+- [Teoría] Edades
+- [Folleto] [Material] [Práctica] Folleto
+- P1
 - [Teoría] Planteo de ecuaciones
+- [Teoría] Porcentajes
 - [Teoría] Psicotécnico
 - [Teoría] Razones y proporciones
 
 ### Raz Verbal
 - [Teoría] Comprensión lectora
+- [Teoría] Idea principal
 - [Teoría] Tema del texto
+- [Teoría] Tipología de preguntas
+- [Teoría] Título del texto 
+- [Teoría] Transcripción
 
 ### Trigonometría
 - [Teoría] Operaciones básicas
+- [Teoría] Reducción al primer cuadrante
+- [Teoría] RT de ángulos agudos
 - [Teoría] Sistema de medidas angulares
 
 ---
@@ -385,6 +444,8 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Práctica] Divisibilidad
 - [Práctica] Fracciones
 - [Práctica] Habilidad operativa
+- [Práctica] MCM y MCD
+- [Práctica] Números primos
 - [Práctica] Potenciación y radicación
 
 ### Biología
@@ -394,8 +455,11 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 
 ### Filosofía
 - [Práctica] Política
+- [Práctica] Falacias
 
 ### Física 1
+- [Práctica] Cinemática
+- [Práctica] Estática
 - [Práctica] MRU
 - [Práctica] Resolución examen UNSA
 - [Práctica] Vectores
@@ -418,6 +482,7 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 ### Geometría
 - [Práctica] Ángulos
 - [Práctica] Líneas notables en un triángulo
+- [Práctica] Miscelánea
 - [Práctica] Segmentos
 - [Práctica] Triángulos
 - [Práctica] Triángulos notables
@@ -454,8 +519,12 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 
 ### Lógica
 - [Práctica] Conect., princip. lógicos. Leng. formal y leyes de la dialéctica
+- [Folleto] [Material] [Práctica] Folleto
+- P1
 
 ### Mates 1
+- [Folleto] [Material] [Práctica] Folleto
+- P1
 - [Práctica] Inecuaciones
 - [Práctica] Fraccionarias y super positivas
 - [Práctica] Planteo de inecuaciones
@@ -466,16 +535,20 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Práctica] Ecuaciones de primer grado
 - [Práctica] Ecuaciones de segundo grado
 - [Práctica] Ecuaciones exponenciales
+- [Folleto] [Material] [Práctica] Folleto
+- P1
 - [Práctica] Matrices
+- [Práctica] Miscelánea
 - [Práctica] Notación polinómica
+- [Práctica] [Teoría] Polinomios
 - [Práctica] Productos notables
-- [Práctica] Repaso general
 - [Práctica] Sistema de ecuaciones
 - [Práctica] Teoría de exponentes
 
 ### Psicología
-- [Práctica] Prácticas
-- [Práctica] Primeros 5 temas
+- [Práctica] Factores de protección
+- [Práctica] Miscelánea
+- [Teoría] Primeros 5 temas
 
 ### Química 1
 - [Práctica] Distribución electrónica
@@ -504,6 +577,7 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Práctica] Estructura textual
 - [Práctica] Comprensión lectora
 - [Práctica] Tema y tema central
+- [Práctica] Transcripción
 
 ### Raz Verbal 2
 - [Material] Raíces griegas

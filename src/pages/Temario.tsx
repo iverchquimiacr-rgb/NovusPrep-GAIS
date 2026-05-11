@@ -1,0 +1,409 @@
+import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  ArrowLeft, BookOpen, Search, ChevronDown, ChevronUp, 
+  Book, PenTool, Beaker, Calculator, Brain, Globe, 
+  Map, Atom, MessageSquare, Shield, FolderOpen, ChevronRight, Moon, Sun
+} from 'lucide-react';
+import { DEFAULT_AI_KNOWLEDGE } from '../data/defaultAiKnowledge';
+import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
+
+// Definition of interfaces for our parsed structure
+interface Topic {
+  id: string;
+  name: string;
+  tags: string[];
+  subtopics: string[];
+}
+
+interface Course {
+  id: string;
+  name: string;
+  topics: Topic[];
+  icon: React.ReactNode;
+}
+
+interface Cycle {
+  id: string;
+  name: string;
+  price: string;
+  courses: Course[];
+}
+
+// Function to map course names to icons
+const getCourseIcon = (courseName: string): React.ReactNode => {
+  const nameL = courseName.toLowerCase();
+  if (nameL.includes('anato') || nameL.includes('biolo')) return <Atom className="w-5 h-5 text-green-500" />;
+  if (nameL.includes('mate') || nameL.includes('aritmetica') || nameL.includes('geom') || nameL.includes('trigo')) return <Calculator className="w-5 h-5 text-blue-500" />;
+  if (nameL.includes('físic') || nameL.includes('químic')) return <Beaker className="w-5 h-5 text-purple-500" />;
+  if (nameL.includes('lengu') || nameL.includes('raz verbal') || nameL.includes('literat') || nameL.includes('inglés')) return <MessageSquare className="w-5 h-5 text-orange-500" />;
+  if (nameL.includes('histo') || nameL.includes('filos')) return <Book className="w-5 h-5 text-amber-600" />;
+  if (nameL.includes('geograf')) return <Globe className="w-5 h-5 text-teal-500" />;
+  if (nameL.includes('psico') || nameL.includes('lógic')) return <Brain className="w-5 h-5 text-pink-500" />;
+  
+  return <FolderOpen className="w-5 h-5 text-gray-500" />;
+};
+
+// Color mapping for tags
+const getTagColor = (tag: string) => {
+  switch (tag.toLowerCase()) {
+    case 'teoría': return 'bg-blue-600 text-white font-bold dark:bg-blue-600 shadow-sm border border-transparent';
+    case 'práctica': return 'bg-green-600 text-white font-bold dark:bg-green-600 shadow-sm border border-transparent';
+    case 'folleto': return 'bg-purple-600 text-white font-bold dark:bg-purple-600 shadow-sm border border-transparent';
+    case 'material': return 'bg-orange-600 text-white font-bold dark:bg-orange-600 shadow-sm border border-transparent';
+    default: return 'bg-slate-600 text-white font-bold dark:bg-slate-600 shadow-sm border border-transparent';
+  }
+};
+
+// Parser
+const parseKnowledge = (markdown: string): Cycle[] => {
+  const lines = markdown.split('\n');
+  const cycles: Cycle[] = [];
+  let currentCycle: Cycle | null = null;
+  let currentCourse: Course | null = null;
+  let currentTopic: Topic | null = null;
+  let categoryPrefix = '';
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    
+    // Skip empty lines or top headings
+    if (!line.trim() || line.startsWith('# PRECIOS') || line.startsWith('# CATÁLOGO') || line.match(/^- \w/)) {
+      continue;
+    }
+
+    if (line.startsWith('## ')) {
+      const rawName = line.replace('## ', '').trim();
+      const matchPrice = rawName.match(/\((S\/\.\d+)\)/);
+      const price = matchPrice ? matchPrice[1] : '';
+      const name = rawName.replace(/\(S\/\.\d+\)/, '').trim();
+      
+      currentCycle = { id: `cycle-${i}`, name, price, courses: [] };
+      cycles.push(currentCycle);
+      currentCourse = null;
+      currentTopic = null;
+      categoryPrefix = '';
+    } else if (line.startsWith('### ')) {
+      if (currentCycle) {
+        const name = line.replace('### ', '').trim();
+        categoryPrefix = name;
+        currentCourse = { id: `course-${i}`, name, topics: [], icon: getCourseIcon(name) };
+        currentCycle.courses.push(currentCourse);
+        currentTopic = null;
+      }
+    } else if (line.startsWith('#### ')) {
+      if (currentCycle) {
+        const subName = line.replace('#### ', '').trim();
+        
+        // If the last added course has NO topics, it was just a category placeholder.
+        // We remove it from the array.
+        if (currentCycle.courses.length > 0) {
+          const lastCourse = currentCycle.courses[currentCycle.courses.length - 1];
+          if (lastCourse.topics.length === 0 && lastCourse.name === categoryPrefix) {
+            currentCycle.courses.pop();
+          }
+        }
+        
+        const combinedName = categoryPrefix ? `${categoryPrefix} - ${subName}` : subName;
+        currentCourse = { id: `course-${i}`, name: combinedName, topics: [], icon: getCourseIcon(subName) };
+        currentCycle.courses.push(currentCourse);
+        currentTopic = null;
+      }
+    } else if (line.startsWith('- ')) {
+      if (!currentCourse && currentCycle) {
+        currentCourse = { id: `course-${i}-general`, name: 'Contenido', topics: [], icon: <Book className="w-5 h-5 text-gray-500" /> };
+        currentCycle.courses.push(currentCourse);
+      }
+
+      if (currentCourse) {
+        let name = line.replace('- ', '').trim();
+        const tags: string[] = [];
+        
+        // Extract tags like [Teoría], [Práctica]
+        const tagRegex = /\[(.*?)\]/g;
+        let match;
+        while ((match = tagRegex.exec(name)) !== null) {
+          tags.push(match[1]);
+        }
+        name = name.replace(/\[.*?\]/g, '').trim();
+
+        currentTopic = { id: `topic-${i}`, name, tags, subtopics: [] };
+        currentCourse.topics.push(currentTopic);
+      }
+    } else if (line.startsWith('  - ')) {
+      if (currentTopic) {
+        let name = line.replace('  - ', '').trim();
+        // Remove tags from subtopic string if any, though usually none
+        currentTopic.subtopics.push(name);
+      }
+    }
+  }
+  return cycles;
+};
+
+// Recursive components
+const TopicRow = ({ topic }: { topic: Topic }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const hasSubtopics = topic.subtopics.length > 0;
+
+  return (
+    <div className="py-2 pl-4">
+      <div 
+        className={`flex flex-wrap items-center gap-2 ${hasSubtopics ? 'cursor-pointer hover:bg-gray-100/50 dark:hover:bg-gray-800/50 p-2 -ml-2 rounded-lg transition-colors select-none' : 'p-2 -ml-2'}`}
+        onClick={() => hasSubtopics && setIsExpanded(!isExpanded)}
+      >
+        {hasSubtopics ? (
+          isExpanded ? (
+            <ChevronDown className="w-4 h-4 text-cyan-600 dark:text-[var(--color-brand-cyan)] shrink-0" />
+          ) : (
+            <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
+          )
+        ) : (
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-brand-cyan)]/50 shrink-0 ml-1.5"></span>
+        )}
+        
+        <span className={`text-sm font-medium leading-tight ${hasSubtopics ? 'text-[var(--color-brand-cyan)]' : 'text-[var(--color-text-main)]'}`}>
+          {topic.name}
+        </span>
+        
+        {topic.tags.map(tag => (
+          <span 
+            key={tag} 
+            className={`text-[10px] px-1.5 py-0.5 rounded-md border font-semibold tracking-wide uppercase ${getTagColor(tag)}`}
+          >
+            {tag}
+          </span>
+        ))}
+        
+        {hasSubtopics && (
+          <span className="text-xs font-bold text-white bg-slate-600 dark:bg-slate-600 px-2 py-0.5 rounded-full ml-auto shadow-sm border border-transparent">
+            {topic.subtopics.length} subtemas
+          </span>
+        )}
+      </div>
+      
+      <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+        {hasSubtopics && (
+          <ul className="mt-1 mb-2 pl-6 border-l-2 border-gray-100 dark:border-gray-800 ml-2 space-y-2">
+            {topic.subtopics.map((sub, idx) => (
+              <li key={idx} className="text-sm text-[var(--color-text-muted)] flex items-start gap-2 pt-1 transition-colors hover:text-[var(--color-text-main)]">
+                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600 shrink-0 mt-2"></span>
+                <span className="leading-tight">{sub}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const CourseAccordion = ({ course, isExpanded, onToggle }: { course: Course, isExpanded: boolean, onToggle: () => void }) => {
+  return (
+    <div className="border border-[var(--color-border)] rounded-xl overflow-hidden bg-[var(--color-bg-card)] transition-all hover:border-[var(--color-brand-cyan)]/50 shadow-sm">
+      <button 
+        onClick={onToggle}
+        className="w-full flex items-center justify-between p-4 hover:bg-gray-50/50 dark:hover:bg-[#1a2133]/50 transition-colors text-left"
+      >
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-[var(--color-bg-card)] rounded-lg shadow-sm border border-[var(--color-border)]">
+            {course.icon}
+          </div>
+          <span className="font-semibold text-[var(--color-text-main)]">{course.name}</span>
+          <span className="text-xs font-bold text-white bg-cyan-600 dark:bg-cyan-600 border border-transparent shadow-sm px-2 py-0.5 rounded-full">
+            {course.topics.length} temas
+          </span>
+        </div>
+        <div className="text-[var(--color-text-muted)]">
+          {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+        </div>
+      </button>
+      
+      {isExpanded && (
+        <div className="p-4 border-t border-[var(--color-border)] bg-[var(--color-bg-card)]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+            {course.topics.map(topic => (
+              <TopicRow key={topic.id} topic={topic} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const CycleSection = ({ cycle, defaultExpanded = false }: { cycle: Cycle, defaultExpanded?: boolean }) => {
+  const [expandedCourses, setExpandedCourses] = useState<Record<string, boolean>>({});
+
+  const toggleCourse = (courseId: string) => {
+    setExpandedCourses(prev => ({
+      ...prev,
+      [courseId]: !prev[courseId]
+    }));
+  };
+
+  return (
+    <div className="mb-12">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 border-b-2 border-[var(--color-border)] pb-4">
+        <div>
+          <h2 className="text-2xl font-bold text-[var(--color-brand-cyan)] flex items-center gap-3">
+            {cycle.name}
+          </h2>
+        </div>
+        {cycle.price && (
+          <div className="bg-[var(--color-brand-cyan)] text-white px-4 py-1.5 rounded-full font-bold text-sm shadow-md inline-block">
+            {cycle.price}
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-3">
+        {cycle.courses.map(course => (
+          <CourseAccordion 
+            key={course.id} 
+            course={course} 
+            isExpanded={!!expandedCourses[course.id] || defaultExpanded}
+            onToggle={() => toggleCourse(course.id)}
+          />
+        ))}
+        {cycle.courses.length === 0 && (
+          <div className="text-[var(--color-text-muted)] text-center py-6 bg-[var(--color-bg-card)] rounded-xl border border-dashed border-[var(--color-border)] opacity-70">
+            No hay cursos detallados para este ciclo.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export const Temario: React.FC = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleBack = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/login');
+    }
+  };
+
+  const cycles = useMemo(() => parseKnowledge(DEFAULT_AI_KNOWLEDGE), []);
+
+  const filteredCycles = useMemo(() => {
+    if (!searchTerm.trim()) return cycles;
+    
+    const lowerSearch = searchTerm.toLowerCase();
+    
+    return cycles.map(cycle => {
+      // Si el ciclo coincide, mostramos todo
+      if (cycle.name.toLowerCase().includes(lowerSearch)) return cycle;
+      
+      const filteredCourses = cycle.courses.map(course => {
+        // Si el curso coincide, mostramos todos sus temas
+        if (course.name.toLowerCase().includes(lowerSearch)) return course;
+        
+        // Si no, filtramos temas y subtemas
+        const filteredTopics = course.topics.filter(topic => 
+          topic.name.toLowerCase().includes(lowerSearch) ||
+          topic.tags.some(tag => tag.toLowerCase().includes(lowerSearch)) ||
+          topic.subtopics.some(sub => sub.toLowerCase().includes(lowerSearch))
+        );
+        
+        return { ...course, topics: filteredTopics };
+      }).filter(course => course.topics.length > 0);
+      
+      return { ...cycle, courses: filteredCourses };
+    }).filter(cycle => cycle.courses.length > 0);
+  }, [cycles, searchTerm]);
+
+  return (
+    <div className="min-h-screen bg-transparent py-12 px-4 sm:px-6 lg:px-8 relative text-[var(--color-text-main)]">
+      <div className="absolute top-4 left-4 sm:top-8 sm:left-8">
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 px-4 py-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] rounded-full hover:bg-[var(--color-brand-cyan)] hover:bg-opacity-10 transition-colors bg-[var(--color-bg-card)] border border-[var(--color-border)] shadow-sm"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="hidden sm:inline font-medium">Volver</span>
+        </button>
+      </div>
+
+      <div className="absolute top-4 right-4 sm:top-8 sm:right-8">
+        <button
+          onClick={toggleTheme}
+          className="p-2 sm:px-4 sm:py-2 flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] rounded-full hover:bg-[var(--color-brand-cyan)] hover:bg-opacity-10 transition-colors bg-[var(--color-bg-card)] border border-[var(--color-border)] shadow-sm"
+        >
+          {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+          <span className="hidden sm:inline font-medium">Tema</span>
+        </button>
+      </div>
+
+      <div className="max-w-5xl mx-auto pt-10 sm:pt-0">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center p-4 bg-gradient-to-br from-[var(--color-brand-cyan)]/10 to-purple-500/10 text-[var(--color-brand-cyan)] rounded-2xl mb-6 shadow-sm border border-[var(--color-brand-cyan)]/20">
+            <BookOpen className="w-10 h-10" />
+          </div>
+          <h1 className="text-3xl font-extrabold text-[var(--color-text-main)] sm:text-5xl tracking-tight mb-4">
+            Catálogo de <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-brand-cyan)] to-[var(--color-brand-deep)] dark:to-purple-500">Contenidos</span>
+          </h1>
+          <p className="text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto">
+            Explora todos los temas, subtemas y materiales disponibles organizados por ciclos y cursos.
+          </p>
+        </div>
+
+        <div className="max-w-2xl mx-auto mb-10 sticky top-4 z-10 shadow-lg shadow-[var(--color-brand-bg)]/50">
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[var(--color-brand-cyan)] transition-colors">
+              <Search className="w-5 h-5" />
+            </div>
+            <input
+              type="text"
+              placeholder="Buscar curso, tema, etiqueta (ej. Biología, Teoría, Vectores)..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-11 pr-4 py-3.5 bg-[var(--color-bg-card)] border-2 border-[var(--color-border)] rounded-2xl focus:border-[var(--color-brand-cyan)] text-[var(--color-text-main)] placeholder-gray-400 focus:outline-none focus:ring-0 transition-all shadow-sm text-sm sm:text-base outline-none"
+            />
+            {searchTerm && (
+              <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="p-1 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4 rotate-180 opacity-0" /> {/* Spacer */}
+                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold bg-gray-200 dark:bg-gray-700 rounded-full w-5 h-5 m-auto">✕</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {filteredCycles.length === 0 ? (
+            <div className="text-center py-20 bg-[var(--color-bg-card)] rounded-3xl border border-[var(--color-border)] shadow-sm">
+              <div className="bg-[var(--color-brand-bg)] w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 border border-[var(--color-border)]/50">
+                <Search className="w-10 h-10 text-[var(--color-text-muted)]" />
+              </div>
+              <h3 className="text-xl font-bold text-[var(--color-text-main)] mb-2">No se encontraron resultados</h3>
+              <p className="text-[var(--color-text-muted)] max-w-md mx-auto">
+                No pudimos encontrar ningún curso o tema que coincida con "{searchTerm}". Intenta con otros términos.
+              </p>
+            </div>
+          ) : (
+            filteredCycles.map(cycle => (
+              <CycleSection 
+                key={cycle.id} 
+                cycle={cycle} 
+                defaultExpanded={searchTerm.length > 0} 
+              />
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+

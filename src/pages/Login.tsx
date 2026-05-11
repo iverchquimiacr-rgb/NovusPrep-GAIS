@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithGoogle, loginWithEmail, registerWithEmail } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
-import { LogIn, Mail, Lock } from 'lucide-react';
+import { LogIn, Mail, Lock, BookOpen } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -180,6 +180,17 @@ export const Login: React.FC = () => {
             {isRegistering ? 'Inicia sesión' : 'Regístrate'}
           </button>
         </p>
+
+        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 w-full flex flex-col items-center">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">¿Quieres ver qué temas tenemos?</p>
+          <button
+            onClick={() => navigate('/temario')}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[var(--color-brand-cyan)] bg-blue-50 dark:bg-blue-900/20 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+          >
+            <BookOpen className="w-4 h-4" />
+            Explorar Temario
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { db, logout } from '../firebase';
 import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
 import { PRODUCTS } from '../data/products';
-import { LogOut, User, CreditCard, Folder, FileText, Moon, Sun, Shield, Lock, Tag, ShoppingCart, X, AlertTriangle, ExternalLink, Bell, CheckCircle, XCircle } from 'lucide-react';
+import { LogOut, User, CreditCard, Folder, FileText, Moon, Sun, Shield, Lock, Tag, ShoppingCart, X, AlertTriangle, ExternalLink, Bell, CheckCircle, XCircle, BookOpen } from 'lucide-react';
 import { AIAssistantWidget } from '../components/AIAssistantWidget';
 import { getFolderIcon } from '../utils/iconMap';
 
@@ -381,6 +381,16 @@ export const Dashboard: React.FC = () => {
               <FileText className="w-8 h-8 mb-3 text-[var(--color-text-muted)] group-hover:text-emerald-500 transition-colors" />
               <span className="text-sm font-medium text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]">
                 Mis Comprobantes
+              </span>
+            </button>
+
+            <button 
+              onClick={() => navigate('/temario')}
+              className="card-base shadow-sm flex flex-col items-center justify-center p-6 rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-brand-cyan)] hover:shadow-[0_0_15px_rgba(0,180,216,0.3)] hover:bg-[var(--color-brand-cyan)]/10 w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1rem)] max-w-[280px] transition-all duration-300 group"
+            >
+              <BookOpen className="w-8 h-8 mb-3 text-[var(--color-text-muted)] group-hover:text-[var(--color-brand-cyan)] transition-colors" />
+              <span className="text-sm font-medium text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]">
+                Temario
               </span>
             </button>
           </div>

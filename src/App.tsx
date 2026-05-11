@@ -16,6 +16,7 @@ import { MisComprobantes } from './pages/MisComprobantes';
 import { AdminUsuarios } from './pages/AdminUsuarios';
 import { AdminGanancias } from './pages/AdminGanancias';
 import { AdminIA } from './pages/AdminIA';
+import { Temario } from './pages/Temario';
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
             <BrowserRouter>
               <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/temario" element={<Temario />} />
             
             <Route 
               path="/dashboard" 

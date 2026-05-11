@@ -42,12 +42,12 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 
 ### Anato 2
 - [Teoría] 1 Sistema nervioso
-- [Folleto] [Material] [Teoría] Folleto de Sistema Nervioso (Valdivia)
+  - [Folleto] [Material] [Teoría] Folleto de Sistema Nervioso (Valdivia)
 - [Teoría] 2 Sistema endocrino 
 - [Teoría] 3 Sistema excretor
 - [Teoría] 4 Aparato digestivo
 - [Teoría] 5 Aparato reproductor
-- [Material] [Teoría] Material (Prof. Púas) 
+  - [Material] [Teoría] Material (Prof. Púas) 
 - [Teoría] 6 Aparato respiratorio
 - [Teoría] 7 Aparato cardiovascular
 - [Teoría] 8 Angiología
@@ -61,7 +61,7 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Teoría] Divisibilidad
 - [Teoría] Estadística
 - [Material] Folleto
-- [Folleto] [Material] [Teoría] Conjuntos, 4 operaciones, porcentajes, aplicaciones comerciales y edades 
+  - [Folleto] [Material] [Teoría] Conjuntos, 4 operaciones, porcentajes, aplicaciones comerciales y edades 
 - [Teoría] MCM y MCD
 - [Teoría] Medidas de tendencia no central 
 - [Teoría] Números racionales
@@ -112,7 +112,7 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Teoría] 8 Regiones naturales
 - [Teoría] 11 Ecorregiones 
 - [Teoría] ANP 
-- [Folleto] [Material] [Teoría] Folleto 
+  - [Folleto] [Material] [Teoría] Folleto 
 - [Teoría] Antártida 
 - [Teoría] Cambio climático
 - [Teoría] Componentes y categorías
@@ -144,8 +144,8 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Teoría] Era del guano
 - [Teoría] Gob. Rev. de las FFAA
 - [Teoría] Incas
-- [Teoría] Generalidades
-- [Teoría] Org Económica
+  - [Teoría] Generalidades
+  - [Teoría] Org Económica
 - [Teoría] Moche - Nazca
 - [Teoría] Presidentes
 - [Teoría] Proceso de independencia 
@@ -183,23 +183,23 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 ### Mates 1
 - [Teoría] Dominio
 - [Material] Folletos
-- [Folleto] [Material] [Teoría] Desigualdades 1
-- [Folleto] [Material] [Teoría] Funciones
+  - [Folleto] [Material] [Teoría] Desigualdades 1
+  - [Folleto] [Material] [Teoría] Funciones
 - [Teoría] Funciones
-- [Teoría] Dominio
-- [Teoría] Función
-- [Teoría] Función exponencial
-- [Teoría] Funciones especiales
-- [Teoría] Función lineal
-- [Teoría] Rango
+  - [Teoría] Dominio
+  - [Teoría] Función
+  - [Teoría] Función exponencial
+  - [Teoría] Funciones especiales
+  - [Teoría] Función lineal
+  - [Teoría] Rango
 - [Teoría] Función exponencial
 - [Teoría] Geometría analítica
-- [Teoría] Pendiente
-- [Teoría] Circunferencia
+  - [Teoría] Pendiente
+  - [Teoría] Circunferencia
 - [Teoría] Inecuaciones
-- [Teoría] Valor absoluto
-- [Teoría] Fraccionarias
-- [Teoría] Teoremas
+  - [Teoría] Valor absoluto
+  - [Teoría] Fraccionarias
+  - [Teoría] Teoremas
 - [Teoría] Intervalos
 
 ### Mates 2
@@ -212,7 +212,7 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Práctica] Factorización
 - [Práctica] [Teoría] Grados de polinomios
 - [Práctica] [Teoría] Matrices y determinantes
-- [Folleto] [Material] [Teoría] Folleto de determinantes
+  - [Folleto] [Material] [Teoría] Folleto de determinantes
 - [Práctica] MCM y MCD de polinomios
 - [Práctica] Notación polinómica
 - [Práctica] Prácticas generales
@@ -237,10 +237,10 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 
 ### Química 2
 - [Teoría] Nomenclatura inorgánica
-- [Teoría] Ácidos oxácidos
-- [Teoría] Óxidos metálicos y no metálicos
-- [Teoría] Sales ácidas
-- [Teoría] Sales oxisales
+  - [Teoría] Ácidos oxácidos
+  - [Teoría] Óxidos metálicos y no metálicos
+  - [Teoría] Sales ácidas
+  - [Teoría] Sales oxisales
 - [Teoría] Química orgánica y átomo de carbono
 - [Teoría] Reacciones nucleares
 - [Teoría] Reacciones químicas
@@ -346,11 +346,11 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 
 ### Historia
 - [Teoría] Culturas preincas
-- [Teoría] Caral
-- [Teoría] Chavín
-- [Teoría] Chimú
-- [Teoría] Nazca
-- [Teoría] Tiwanaku Wari
+  - [Teoría] Caral
+  - [Teoría] Chavín
+  - [Teoría] Chimú
+  - [Teoría] Nazca
+  - [Teoría] Tiwanaku Wari
 - [Teoría] División histórica del Perú
 - [Teoría] Poblamiento americano
 
@@ -363,19 +363,20 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 
 ### Lógica
 - [Teoría] Conectores y principios lógicos
-- [Teoría] Def., propos., conectores
-- [Teoría] Form. del pensam., argumentos, dialéctica y princ. formal.
-- [Teoría] Formalización
-- [Teoría] Lenguaje formal y leyes de la dialéctica
-- [Teoría] Modalidad
+  - [Teoría] Def., propos., conectores
+  - [Teoría] Form. del pensam., argumentos, dialéctica y princ. formal.
+  - [Teoría] Formalización
+  - [Teoría] Lenguaje formal y leyes de la dialéctica
+  - [Teoría] Modalidad
 
 ### Mates 1
 - [Teoría] Funciones
-- Dominio
+  - Dominio
+  - Función cuadrática
 - [Teoría] Inecuaciones
-- [Teoría] Inec. de segundo grado
-- [Teoría] Reglas para elevar al cuadrado y sacar valor absoluto
-- [Teoría] Reglas para invertir
+  - [Teoría] Inec. de segundo grado
+  - [Teoría] Reglas para elevar al cuadrado y sacar valor absoluto
+  - [Teoría] Reglas para invertir
 
 ### Mates 2
 - [Teoría] Ecuaciones de primer grado
@@ -396,8 +397,8 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 ### Química
 - [Teoría] Átomo
 - [Teoría] Funciones inorgánicas
-- [Teoría] Hidróxido
-- [Teoría] Óxidos
+  - [Teoría] Hidróxido
+  - [Teoría] Óxidos
 - [Teoría] Método científico
 - [Teoría] Modelos atómicos
 - [Teoría] Valencias y estados de oxidación
@@ -406,7 +407,7 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 ### Raz Matemático
 - [Teoría] Edades
 - [Folleto] [Material] [Práctica] Folleto
-- P1
+  - P1
 - [Teoría] Planteo de ecuaciones
 - [Teoría] Porcentajes
 - [Teoría] Psicotécnico
@@ -472,8 +473,8 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Práctica] 8 regiones naturales
 - [Práctica] ANP
 - [Material] [Práctica] Banco de preguntas (Alexis)
-- [Folleto] [Material] [Práctica] Geografía, geosistema, y geografía peruana
-- [Folleto] [Material] [Práctica] 8 regiones, 11 ecorregiones, ANP
+  - [Folleto] [Material] [Práctica] Geografía, geosistema, y geografía peruana
+  - [Folleto] [Material] [Práctica] 8 regiones, 11 ecorregiones, ANP
 - [Práctica] Geografía
 - [Práctica] Geografía como ciencia
 - [Práctica] Relieve andino
@@ -520,14 +521,14 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 ### Lógica
 - [Práctica] Conect., princip. lógicos. Leng. formal y leyes de la dialéctica
 - [Folleto] [Material] [Práctica] Folleto
-- P1
+  - P1
 
 ### Mates 1
 - [Folleto] [Material] [Práctica] Folleto
-- P1
+  - P1
 - [Práctica] Inecuaciones
-- [Práctica] Fraccionarias y super positivas
-- [Práctica] Planteo de inecuaciones
+  - [Práctica] Fraccionarias y super positivas
+  - [Práctica] Planteo de inecuaciones
 - [Práctica] Reglas para elevar al cuadrado, valor absoluto e invertir
 
 ### Mates 2
@@ -536,7 +537,7 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Práctica] Ecuaciones de segundo grado
 - [Práctica] Ecuaciones exponenciales
 - [Folleto] [Material] [Práctica] Folleto
-- P1
+  - P1
 - [Práctica] Matrices
 - [Práctica] Miscelánea
 - [Práctica] Notación polinómica
@@ -595,9 +596,9 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Teoría] Ciclo celular
 - [Teoría] Embriología
 - [Teoría] Inmunología
-- [Teoría] La respuesta humoral
-- [Teoría] Mecanismos adquiridos adaptativos
-- [Teoría] Tipos de inmunidad
+  - [Teoría] La respuesta humoral
+  - [Teoría] Mecanismos adquiridos adaptativos
+  - [Teoría] Tipos de inmunidad
 - [Teoría] Meiosis
 - [Teoría] Seminario: Ácidos nucleicos y tejido óseo
 - [Teoría] Seminario: Glándulas
@@ -606,10 +607,10 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Teoría] Tejido conectivo
 - [Teoría] Tejido conectivo (Óseo)
 - [Teoría] Tejido conectivo (Sanguíneo)
-- [Teoría] Eritrón
-- [Teoría] Leucocitos
-- [Teoría] Plaquetas
-- [Teoría] Sangre
+  - [Teoría] Eritrón
+  - [Teoría] Leucocitos
+  - [Teoría] Plaquetas
+  - [Teoría] Sangre
 - [Teoría] Tejido epitelial
 - [Teoría] Tejido muscular
 - [Teoría] Tejido nervioso
@@ -618,8 +619,8 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 #### Anato 2
 - [Teoría] Aparato cardiovascular
 - [Teoría] Aparato digestivo
-- [Teoría] Seminario
-- [Teoría] Seminario 2
+  - [Teoría] Seminario
+  - [Teoría] Seminario 2
 - [Teoría] Reproductor femenino
 - [Teoría] Sistema endocrino
 - [Teoría] Sistema nervioso
@@ -705,27 +706,27 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 #### Historia 1
 - [Teoría] Chavín
 - [Material] [Teoría] Diapositivas
-- [Material] [Teoría] 1 Chavín
-- [Material] [Teoría] 2 Paracas
-- [Material] [Teoría] 3 Moche
-- [Material] [Teoría] 4 Nasca
-- [Material] [Teoría] 5 Tiwanaku
-- [Material] [Teoría] 6 Wari
-- [Material] [Teoría] 7 Incas
-- [Material] [Teoría] 8 Org política
-- [Material] [Teoría] 9 Década perdida
-- [Material] [Teoría] 10 Populismo y neoliberalismo
-- [Material] [Teoría] 11 Presidentes del siglo XXI
+  - [Material] [Teoría] 1 Chavín
+  - [Material] [Teoría] 2 Paracas
+  - [Material] [Teoría] 3 Moche
+  - [Material] [Teoría] 4 Nasca
+  - [Material] [Teoría] 5 Tiwanaku
+  - [Material] [Teoría] 6 Wari
+  - [Material] [Teoría] 7 Incas
+  - [Material] [Teoría] 8 Org política
+  - [Material] [Teoría] 9 Década perdida
+  - [Material] [Teoría] 10 Populismo y neoliberalismo
+  - [Material] [Teoría] 11 Presidentes del siglo XXI
 - [Teoría] Incas - Org política
 - [Teoría] Incas - Org social
 - [Material] [Teoría] Llaveros
-- [Llaveros] [Material] [Teoría] Culturas del Perú antiguo
-- [Llaveros] [Material] [Teoría] Conquista, rebeliones, guerras, virreinato, reformas y emancipación
+  - [Llaveros] [Material] [Teoría] Culturas del Perú antiguo
+  - [Llaveros] [Material] [Teoría] Conquista, rebeliones, guerras, virreinato, reformas y emancipación
 - [Llaveros] [Material] [Teoría] Tahuantinsuyo
 - [Teoría] Presidentes
-- [Teoría] 1 II gob de Belaúnde y I gob de Alan García
-- [Teoría] 2 I gob de Alan García e inicios de Fujimori
-- [Teoría] 3 I de Fujimori
+  - [Teoría] 1 II gob de Belaúnde y I gob de Alan García
+  - [Teoría] 2 I gob de Alan García e inicios de Fujimori
+  - [Teoría] 3 I de Fujimori
 - [Teoría] Repaso de incas
 - [Teoría] Tiwanaku
 - [Teoría] Wari
@@ -759,8 +760,8 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Teoría] Conjunciones
 - [Teoría] Determinante
 - [Material] Material
-- [Material] Cancionero
-- [Material] [Teoría] Tetrafoliado
+  - [Material] Cancionero
+  - [Material] [Teoría] Tetrafoliado
 - [Teoría] Pronombre
 - [Teoría] Preposición
 - [Teoría] Sujeto
@@ -779,8 +780,8 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Teoría] Generación del 27
 - [Teoría] Generación del 98
 - [Material] Láminas
-- [Material] [Teoría] Generación del 27
-- [Material] [Teoría] Generación del 98
+  - [Material] [Teoría] Generación del 27
+  - [Material] [Teoría] Generación del 98
 - [Teoría] Medievalismo
 - [Teoría] Neoclasicismo y romanticismo
 - [Teoría] Renacimiento
@@ -800,18 +801,18 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 #### Mates 1
 - [Teoría] Discriminante
 - [Teoría] Funciones
-- [Teoría] Álgebra de funciones
-- [Teoría] Dominio
-- [Teoría] Función cuadrática
-- [Teoría] Función exponencial
-- [Teoría] Función lineal
-- [Teoría] Rango
+  - [Teoría] Álgebra de funciones
+  - [Teoría] Dominio
+  - [Teoría] Función cuadrática
+  - [Teoría] Función exponencial
+  - [Teoría] Función lineal
+  - [Teoría] Rango
 - [Teoría] Geometría analítica
-- [Teoría] Circunferencia
-- [Teoría] Ecuación de la recta
-- [Teoría] Nociones
-- [Teoría] Parábola
-- [Teoría] Pendiente
+  - [Teoría] Circunferencia
+  - [Teoría] Ecuación de la recta
+  - [Teoría] Nociones
+  - [Teoría] Parábola
+  - [Teoría] Pendiente
 - [Teoría] Inecuaciones
 
 #### Mates 2
@@ -853,13 +854,13 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Teoría] Átomo
 - [Teoría] Cicloalcanos
 - [Teoría] Nomenclatura inorgánica
-- [Teoría] Ácidos
-- [Teoría] Ácidos oxácidos especiales
-- [Teoría] Hidróxido
-- [Teoría] Óxidos metálicos y no metálicos
-- [Teoría] Peróxidos y guía
-- [Teoría] Sales haloideas
-- [Teoría] Sales oxisales
+  - [Teoría] Ácidos
+  - [Teoría] Ácidos oxácidos especiales
+  - [Teoría] Hidróxido
+  - [Teoría] Óxidos metálicos y no metálicos
+  - [Teoría] Peróxidos y guía
+  - [Teoría] Sales haloideas
+  - [Teoría] Sales oxisales
 - [Teoría] Reacciones químicas
 - [Teoría] Valencias y estados de oxidación
 - [Material] Tabla periódica
@@ -1109,11 +1110,11 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Teoría] Ángulos entre rectas paralelas
 - [Teoría] Cuadriláteros
 - [Material] Folletos
-- [Folleto] [Material] [Teoría] Cuadriláteros
-- [Folleto] [Material] [Teoría] Líneas notables del triángulo
-- [Folleto] [Material] [Teoría] Proporcionalidad de segmentos
-- [Folleto] [Material] [Teoría] Relaciones métricas en el triángulo rectángulo
-- [Folleto] [Material] [Teoría] Triángulos
+  - [Folleto] [Material] [Teoría] Cuadriláteros
+  - [Folleto] [Material] [Teoría] Líneas notables del triángulo
+  - [Folleto] [Material] [Teoría] Proporcionalidad de segmentos
+  - [Folleto] [Material] [Teoría] Relaciones métricas en el triángulo rectángulo
+  - [Folleto] [Material] [Teoría] Triángulos
 - [Teoría] Líneas notables asociadas a un triángulo
 - [Teoría] Relaciones métricas en el triángulo rectángulo
 - [Teoría] Relaciones métricas en la circunferencia
@@ -1124,12 +1125,12 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 #### Historia 1
 - [Teoría] Conquista Española
 - [Teoría] Culturas preincas
-- [Teoría] Chavín
-- [Teoría] Nazca
-- [Teoría] Paracas
-- [Teoría] Horizonte Medio
-- [Teoría] Horizonte Temprano
-- [Teoría] Intermedio temprano
+  - [Teoría] Chavín
+  - [Teoría] Nazca
+  - [Teoría] Paracas
+  - [Teoría] Horizonte Medio
+  - [Teoría] Horizonte Temprano
+  - [Teoría] Intermedio temprano
 - [Teoría] Imperio Incaico
 - [Teoría] Década perdida
 - [Teoría] Gobierno de Alan García
@@ -1206,15 +1207,15 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 #### Mates 1
 - [Teoría] Discriminante
 - [Teoría] Funciones
-- [Teoría] Dominio
-- [Teoría] Funciones
+  - [Teoría] Dominio
+  - [Teoría] Funciones
 - [Teoría] Geometría analítica
-- [Teoría] La recta
-- [Teoría] Nociones de geometría analítica
+  - [Teoría] La recta
+  - [Teoría] Nociones de geometría analítica
 - [Teoría] Inecuaciones
-- [Teoría] Inec. Cuadrática
-- [Teoría] Inecuaciones
-- [Teoría] Intervalos
+  - [Teoría] Inec. Cuadrática
+  - [Teoría] Inecuaciones
+  - [Teoría] Intervalos
 
 #### Mates 2
 - [Teoría] Cómo estudiar mates, física, química
@@ -1311,11 +1312,11 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Material] [Teoría] Filosofía (Prof. David Quispe)
 - [Teoría] Física
 - [Material] [Teoría] Historia (Prof. Abel Carrasco)
-- [Material] [Teoría] Historia 1
-- [Material] [Teoría] Historia 2
+  - [Material] [Teoría] Historia 1
+  - [Material] [Teoría] Historia 2
 - [Material] [Teoría] Lenguaje (Prof. Deybi)
-- [Material] [Teoría] Lenguaje 1
-- [Material] [Teoría] Lenguaje 2
+  - [Material] [Teoría] Lenguaje 1
+  - [Material] [Teoría] Lenguaje 2
 - [Material] [Práctica] [Teoría] Lógica (Prof. Dukee)
 
 ---

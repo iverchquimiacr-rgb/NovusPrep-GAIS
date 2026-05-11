@@ -9,12 +9,6 @@ export const ExplorarCarpetas: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
-  // Sort products: put "Resumen" (vendible: false) at the end
-  const sortedProducts = [...PRODUCTS].sort((a, b) => {
-    if (a.vendible === b.vendible) return 0;
-    return a.vendible ? -1 : 1;
-  });
-
   return (
     <div className="min-h-screen bg-transparent py-12 px-4 sm:px-6 lg:px-8 relative">
       <div className="absolute top-4 right-4 flex gap-2">
@@ -48,7 +42,7 @@ export const ExplorarCarpetas: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {sortedProducts.map((product) => (
+          {PRODUCTS.map((product) => (
             <div 
               key={product.id}
               className="card-base p-6 rounded-2xl border border-[var(--color-border)] shadow-sm hover:shadow-md hover:border-[var(--color-brand-cyan)] transition-all flex flex-col"

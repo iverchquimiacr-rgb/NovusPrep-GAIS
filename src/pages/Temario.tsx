@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, BookOpen, Search, ChevronDown, ChevronUp, 
   Book, PenTool, Beaker, Calculator, Brain, Globe, 
-  Map, Atom, MessageSquare, Shield, FolderOpen, ChevronRight, Moon, Sun
+  Map, Atom, MessageSquare, Shield, FolderOpen, ChevronRight, Moon, Sun, ArrowUp
 } from 'lucide-react';
 import { DEFAULT_AI_KNOWLEDGE } from '../data/defaultAiKnowledge';
 import { useAuth } from '../contexts/AuthContext';
@@ -244,7 +244,7 @@ const CycleSection = ({ cycle, defaultExpanded = false }: { cycle: Cycle, defaul
   };
 
   return (
-    <div className="mb-12">
+    <div id={cycle.id} className="mb-12 scroll-mt-24">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 border-b-2 border-[var(--color-border)] pb-4">
         <div>
           <h2 className="text-2xl font-bold text-[var(--color-brand-cyan)] flex items-center gap-3">
@@ -282,6 +282,24 @@ export const Temario: React.FC = () => {
   const { user } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleBack = () => {
     if (user) {
@@ -355,7 +373,7 @@ export const Temario: React.FC = () => {
           </p>
         </div>
 
-        <div className="max-w-2xl mx-auto mb-10 sticky top-4 z-10 shadow-lg shadow-[var(--color-brand-bg)]/50">
+        <div className="max-w-2xl mx-auto mb-10 sticky top-4 z-10">
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[var(--color-brand-cyan)] transition-colors">
               <Search className="w-5 h-5" />
@@ -379,6 +397,24 @@ export const Temario: React.FC = () => {
               </div>
             )}
           </div>
+          
+          {/* Quick Navigation Chips */}
+          {!searchTerm && cycles.length > 0 && (
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              {cycles.map(cycle => (
+                <button
+                  key={`nav-${cycle.id}`}
+                  onClick={() => {
+                    const el = document.getElementById(cycle.id);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="text-xs font-bold px-3 py-1.5 rounded-full bg-[var(--color-bg-card)] border-2 border-[var(--color-border)] text-[var(--color-text-main)] hover:border-[var(--color-brand-cyan)] hover:text-[var(--color-brand-cyan)] transition-colors shadow-sm"
+                >
+                  {cycle.name}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">
@@ -403,6 +439,17 @@ export const Temario: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 p-3 bg-[var(--color-brand-cyan)] hover:bg-[var(--color-brand-deep)] text-white rounded-full shadow-lg transition-all hover:scale-110 z-50 flex items-center justify-center"
+          title="Volver arriba"
+        >
+          <ArrowUp className="w-6 h-6" />
+        </button>
+      )}
     </div>
   );
 };

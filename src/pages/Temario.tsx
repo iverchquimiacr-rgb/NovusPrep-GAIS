@@ -20,6 +20,7 @@ interface Topic {
 interface Course {
   id: string;
   name: string;
+  category?: string;
   topics: Topic[];
   icon: React.ReactNode;
 }
@@ -105,8 +106,7 @@ const parseKnowledge = (markdown: string): Cycle[] => {
           }
         }
         
-        const combinedName = categoryPrefix ? `${categoryPrefix} - ${subName}` : subName;
-        currentCourse = { id: `course-${i}`, name: combinedName, topics: [], icon: getCourseIcon(subName) };
+        currentCourse = { id: `course-${i}`, name: subName, category: categoryPrefix, topics: [], icon: getCourseIcon(subName) };
         currentCycle.courses.push(currentCourse);
         currentTopic = null;
       }
@@ -235,6 +235,7 @@ const CourseAccordion = ({ course, isExpanded, onToggle }: { course: Course, isE
 
 const CycleSection = ({ cycle, defaultExpanded = false }: { cycle: Cycle, defaultExpanded?: boolean }) => {
   const [expandedCourses, setExpandedCourses] = useState<Record<string, boolean>>({});
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
 
   const toggleCourse = (courseId: string) => {
     setExpandedCourses(prev => ({
@@ -242,6 +243,34 @@ const CycleSection = ({ cycle, defaultExpanded = false }: { cycle: Cycle, defaul
       [courseId]: !prev[courseId]
     }));
   };
+
+  const toggleCategory = (category: string) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
+  };
+
+  // Group courses by category
+  const groupedCourses = useMemo(() => {
+    const groups: { category: string; courses: Course[] }[] = [];
+    const noCategory: Course[] = [];
+    const categoryMap: Record<string, Course[]> = {};
+
+    cycle.courses.forEach(course => {
+      if (course.category) {
+        if (!categoryMap[course.category]) {
+          categoryMap[course.category] = [];
+          groups.push({ category: course.category, courses: categoryMap[course.category] });
+        }
+        categoryMap[course.category].push(course);
+      } else {
+        noCategory.push(course);
+      }
+    });
+
+    return { groups, noCategory };
+  }, [cycle.courses]);
 
   return (
     <div id={cycle.id} className="mb-12 scroll-mt-24">
@@ -259,7 +288,42 @@ const CycleSection = ({ cycle, defaultExpanded = false }: { cycle: Cycle, defaul
       </div>
 
       <div className="flex flex-col gap-3">
-        {cycle.courses.map(course => (
+        {groupedCourses.groups.map(group => (
+          <div key={group.category} className="border-2 border-[var(--color-border)] rounded-xl overflow-hidden bg-[var(--color-bg-main)] shadow-sm">
+            <button
+              onClick={() => toggleCategory(group.category)}
+              className="w-full flex items-center justify-between p-4 bg-[var(--color-brand-bg)] hover:bg-[var(--color-border)]/30 transition-colors text-left"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-[var(--color-brand-cyan)] text-white rounded-lg shadow-sm">
+                  <FolderOpen className="w-5 h-5" />
+                </div>
+                <span className="font-bold text-lg text-[var(--color-text-main)]">{group.category}</span>
+                <span className="text-xs font-bold text-[var(--color-text-muted)] bg-[var(--color-bg-card)] border border-[var(--color-border)] px-2 py-0.5 rounded-full">
+                  {group.courses.length} cursos
+                </span>
+              </div>
+              <div className="text-[var(--color-brand-cyan)]">
+                {expandedCategories[group.category] || defaultExpanded ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
+              </div>
+            </button>
+            
+            {(expandedCategories[group.category] || defaultExpanded) && (
+              <div className="p-4 flex flex-col gap-3 border-t border-[var(--color-border)]/50">
+                {group.courses.map(course => (
+                  <CourseAccordion 
+                    key={course.id} 
+                    course={course} 
+                    isExpanded={!!expandedCourses[course.id] || defaultExpanded}
+                    onToggle={() => toggleCourse(course.id)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+
+        {groupedCourses.noCategory.map(course => (
           <CourseAccordion 
             key={course.id} 
             course={course} 
@@ -267,6 +331,7 @@ const CycleSection = ({ cycle, defaultExpanded = false }: { cycle: Cycle, defaul
             onToggle={() => toggleCourse(course.id)}
           />
         ))}
+
         {cycle.courses.length === 0 && (
           <div className="text-[var(--color-text-muted)] text-center py-6 bg-[var(--color-bg-card)] rounded-xl border border-dashed border-[var(--color-border)] opacity-70">
             No hay cursos detallados para este ciclo.
@@ -321,8 +386,9 @@ export const Temario: React.FC = () => {
       if (cycle.name.toLowerCase().includes(lowerSearch)) return cycle;
       
       const filteredCourses = cycle.courses.map(course => {
-        // Si el curso coincide, mostramos todos sus temas
-        if (course.name.toLowerCase().includes(lowerSearch)) return course;
+        const categoryMatch = course.category && course.category.toLowerCase().includes(lowerSearch);
+        // Si el curso o la categoria coincide, mostramos todos sus temas
+        if (course.name.toLowerCase().includes(lowerSearch) || categoryMatch) return course;
         
         // Si no, filtramos temas y subtemas
         const filteredTopics = course.topics.filter(topic => 
@@ -331,8 +397,11 @@ export const Temario: React.FC = () => {
           topic.subtopics.some(sub => sub.toLowerCase().includes(lowerSearch))
         );
         
-        return { ...course, topics: filteredTopics };
-      }).filter(course => course.topics.length > 0);
+        if (filteredTopics.length > 0) {
+          return { ...course, topics: filteredTopics };
+        }
+        return null;
+      }).filter(course => course !== null) as Course[];
       
       return { ...cycle, courses: filteredCourses };
     }).filter(cycle => cycle.courses.length > 0);

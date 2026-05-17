@@ -17,6 +17,7 @@ export const RegistrarPago: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [totalPaid, setTotalPaid] = useState(0);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const [generatedPayment, setGeneratedPayment] = useState<any>(null);
 
@@ -183,6 +184,9 @@ export const RegistrarPago: React.FC = () => {
               <label className="block text-sm font-medium text-[var(--color-text-main)] mb-2">
                 Subir Comprobante <span className="text-[var(--color-text-muted)] font-normal">(<span className="text-red-500 font-bold">obligatorio para Yape</span>)</span>
               </label>
+              <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 p-3 rounded-lg text-sm border border-blue-200 dark:border-blue-800/50 mb-3">
+                <span className="font-semibold">Nota de privacidad:</span> Puede cubrir información no necesaria antes de enviar el documento para proteger su privacidad.
+              </div>
               <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-[var(--color-border)] border-dashed rounded-xl hover:border-[var(--color-brand-cyan)] transition-colors bg-[var(--color-bg-card)]">
                 <div className="space-y-1 text-center">
                   <Upload className="mx-auto h-12 w-12 text-[var(--color-text-muted)]" />
@@ -210,10 +214,23 @@ export const RegistrarPago: React.FC = () => {
             </div>
 
             <div className="pt-4">
+              <div className="flex items-start gap-3 mb-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                <input
+                  type="checkbox"
+                  id="termsRefund"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="mt-1 h-5 w-5 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
+                />
+                <label htmlFor="termsRefund" className="text-sm text-gray-700 dark:text-gray-300">
+                  Entiendo que algunos productos digitales pueden no ser reembolsables una vez entregados.
+                </label>
+              </div>
+
               <button
                 type="submit"
-                disabled={isSubmitting || !amount}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-[var(--color-brand-orange)] to-[var(--color-brand-gold)] hover:scale-[1.02] transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-brand-orange)] disabled:opacity-70 disabled:scale-100"
+                disabled={isSubmitting || !amount || !termsAccepted}
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-[var(--color-brand-orange)] to-[var(--color-brand-gold)] hover:scale-[1.02] transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-brand-orange)] disabled:opacity-70 disabled:scale-100 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Registrando...' : 'Confirmar Registro de Pago'}
               </button>

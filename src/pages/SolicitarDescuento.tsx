@@ -13,6 +13,7 @@ export const SolicitarDescuento: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [files, setFiles] = useState<File[]>([]);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const [formData, setFormData] = useState({
     p1: '0',
@@ -385,6 +386,9 @@ export const SolicitarDescuento: React.FC = () => {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-[var(--color-text-main)] border-b border-[var(--color-border)] pb-2">📎 Documentos de sustento (Opcional)</h3>
                 <p className="text-sm text-[var(--color-text-muted)]">Puedes adjuntar recibos de luz, agua, matrículas de colegio o academia que sustenten tu solicitud en cuanto a vivienda y tipo de colegio y academia.</p>
+                <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 p-3 rounded-lg text-sm border border-blue-200 dark:border-blue-800/50 mb-2">
+                  <span className="font-semibold">Nota de privacidad:</span> Puede cubrir información no necesaria (como números de cliente, códigos internos o datos que no sean relevantes) antes de enviar el documento para proteger su privacidad.
+                </div>
                 
                 <div className="flex items-center justify-center w-full">
                   <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer border-[var(--color-border)] hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
@@ -418,12 +422,22 @@ export const SolicitarDescuento: React.FC = () => {
               </div>
 
               <div className="pt-4">
-                <p className="text-sm text-[var(--color-text-muted)] text-center mb-6">
-                  Al enviar declaras que la información es verídica.
-                </p>
+                <div className="flex items-start gap-3 mb-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                  <input
+                    type="checkbox"
+                    id="termsSocio"
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    className="mt-1 h-5 w-5 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="termsSocio" className="text-sm text-gray-700 dark:text-gray-300">
+                    Autorizo el tratamiento de la información y documentos enviados para la evaluación del descuento socioeconómico, y declaro que la información es verídica.
+                  </label>
+                </div>
+                
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !termsAccepted}
                   className="w-full flex items-center justify-center gap-2 bg-[var(--color-brand-cyan)] hover:bg-[var(--color-brand-deep)] text-white px-6 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (

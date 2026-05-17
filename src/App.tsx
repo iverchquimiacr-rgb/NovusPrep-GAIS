@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -17,20 +17,22 @@ import { AdminUsuarios } from './pages/AdminUsuarios';
 import { AdminGanancias } from './pages/AdminGanancias';
 import { AdminIA } from './pages/AdminIA';
 import { Temario } from './pages/Temario';
+import { Legal } from './pages/Legal';
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <div className="min-h-screen text-[var(--color-text-main)] relative pb-12">
-          <div className="fixed inset-0 z-0 flex items-center justify-center opacity-10 dark:opacity-20 pointer-events-none">
-            <img src="/img/Logo.png" className="w-[50%] max-w-sm object-contain" />
-          </div>
-          <div className="relative z-10">
-            <BrowserRouter>
+    <BrowserRouter>
+      <ThemeProvider>
+        <AuthProvider>
+          <div className="min-h-screen text-[var(--color-text-main)] relative pb-12">
+            <div className="fixed inset-0 z-0 flex items-center justify-center opacity-10 dark:opacity-20 pointer-events-none">
+              <img src="/img/Logo.png" className="w-[50%] max-w-sm object-contain" />
+            </div>
+            <div className="relative z-10">
               <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/temario" element={<Temario />} />
+            <Route path="/legal" element={<Legal />} />
             
             <Route 
               path="/dashboard" 
@@ -142,13 +144,14 @@ export default function App() {
             
             <Route path="/" element={<Navigate to="/login" replace />} />
               </Routes>
-            </BrowserRouter>
+            </div>
+            <footer className="fixed bottom-0 w-full text-center py-3 text-xs text-[var(--color-text-muted)] pointer-events-none z-50 flex justify-center gap-4">
+              <span>© 2026 NovusPrep - Quality and Confidence forever</span>
+              <Link to="/legal" className="hover:underline pointer-events-auto text-[var(--color-brand-cyan)]">Políticas y Legal</Link>
+            </footer>
           </div>
-          <footer className="fixed bottom-0 w-full text-center py-3 text-xs text-[var(--color-text-muted)] pointer-events-none z-50">
-            © 2026 NovusPrep - Quality and Confidence forever
-          </footer>
-        </div>
-      </AuthProvider>
-    </ThemeProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }

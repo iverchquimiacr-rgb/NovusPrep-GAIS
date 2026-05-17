@@ -439,6 +439,16 @@ export const Dashboard: React.FC = () => {
                 </div>
 
                 <div className="pt-6 mt-6 border-t border-[var(--color-border)] flex flex-col gap-3">
+                  <button
+                    onClick={() => {
+                        setIsProfileModalOpen(false);
+                        navigate('/legal');
+                    }}
+                    className="w-full py-2 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-[var(--color-text-main)] rounded-xl font-medium transition-colors flex justify-center items-center gap-2"
+                  >
+                    <BookOpen className="w-4 h-4" />
+                    Ver Políticas y Legal
+                  </button>
                   <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-xl text-sm text-center">
                     Si deseas eliminar tu cuenta, por favor comunícate con un administrador.
                   </div>

@@ -35,11 +35,12 @@ interface Cycle {
 // Function to map course names to icons
 const getCourseIcon = (courseName: string): React.ReactNode => {
   const nameL = courseName.toLowerCase();
-  if (nameL.includes('anato') || nameL.includes('biolo')) return <Atom className="w-5 h-5 text-green-500" />;
-  if (nameL.includes('mate') || nameL.includes('aritmetica') || nameL.includes('geom') || nameL.includes('trigo')) return <Calculator className="w-5 h-5 text-blue-500" />;
+  
+  if (nameL.includes('anato') || nameL.includes('fisiolog') || nameL.includes('biolo')) return <Atom className="w-5 h-5 text-green-500" />;
+  if (nameL.includes('mate') || nameL.includes('aritm') || nameL.includes('geom') || nameL.includes('trigo') || nameL.includes('raz mat') || nameL.includes('razonamiento matem')) return <Calculator className="w-5 h-5 text-blue-500" />;
   if (nameL.includes('físic') || nameL.includes('químic')) return <Beaker className="w-5 h-5 text-purple-500" />;
-  if (nameL.includes('lengu') || nameL.includes('raz verbal') || nameL.includes('literat') || nameL.includes('inglés')) return <MessageSquare className="w-5 h-5 text-orange-500" />;
-  if (nameL.includes('histo') || nameL.includes('filos')) return <Book className="w-5 h-5 text-amber-600" />;
+  if (nameL.includes('lengu') || nameL.includes('raz verbal') || nameL.includes('razonamiento verbal') || nameL.includes('literat') || nameL.includes('inglés')) return <MessageSquare className="w-5 h-5 text-orange-500" />;
+  if (nameL.includes('histo') || nameL.includes('filos') || nameL.includes('cívica')) return <Book className="w-5 h-5 text-amber-600" />;
   if (nameL.includes('geograf')) return <Globe className="w-5 h-5 text-teal-500" />;
   if (nameL.includes('psico') || nameL.includes('lógic')) return <Brain className="w-5 h-5 text-pink-500" />;
   
@@ -66,6 +67,23 @@ const parseKnowledge = (markdown: string): Cycle[] => {
   let currentTopic: Topic | null = null;
   let categoryPrefix = '';
 
+  // Helper to format course names and capitalize
+    const formatCourseName = (name: string): string => {
+    let lowerObj = name.toLowerCase();
+    
+    if (lowerObj === 'anato 1') return 'Anatomía Fisiología 1';
+    if (lowerObj === 'anato 2') return 'Anatomía Fisiología 2';
+    if (lowerObj === 'anatomía') return 'Anatomía y Fisiología';
+    if (lowerObj === 'raz mat' || lowerObj === 'raz matemático') return 'Razonamiento Matemático';
+    if (lowerObj === 'raz verbal') return 'Razonamiento Verbal';
+    if (lowerObj === 'raz verbal 1') return 'Razonamiento Verbal 1';
+    if (lowerObj === 'raz verbal 2') return 'Razonamiento Verbal 2';
+    if (lowerObj === 'mates 1') return 'Matemáticas 1';
+    if (lowerObj === 'mates 2') return 'Matemáticas 2';
+
+    return name;
+  };
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     
@@ -78,7 +96,7 @@ const parseKnowledge = (markdown: string): Cycle[] => {
       const rawName = line.replace('## ', '').trim();
       const matchPrice = rawName.match(/\((S\/\.\d+)\)/);
       const price = matchPrice ? matchPrice[1] : '';
-      const name = rawName.replace(/\(S\/\.\d+\)/, '').trim();
+      const name = rawName.replace(/\(S\/\.\d+\)/, '').trim().toUpperCase();
       
       currentCycle = { id: `cycle-${i}`, name, price, courses: [] };
       cycles.push(currentCycle);
@@ -87,7 +105,7 @@ const parseKnowledge = (markdown: string): Cycle[] => {
       categoryPrefix = '';
     } else if (line.startsWith('### ')) {
       if (currentCycle) {
-        const name = line.replace('### ', '').trim();
+        const name = formatCourseName(line.replace('### ', '').trim()).toUpperCase();
         categoryPrefix = name;
         currentCourse = { id: `course-${i}`, name, topics: [], icon: getCourseIcon(name) };
         currentCycle.courses.push(currentCourse);
@@ -95,7 +113,7 @@ const parseKnowledge = (markdown: string): Cycle[] => {
       }
     } else if (line.startsWith('#### ')) {
       if (currentCycle) {
-        const subName = line.replace('#### ', '').trim();
+        let subName = formatCourseName(line.replace('#### ', '').trim()).toUpperCase();
         
         // If the last added course has NO topics, it was just a category placeholder.
         // We remove it from the array.
@@ -272,23 +290,42 @@ const CycleSection = ({ cycle, defaultExpanded = false }: { cycle: Cycle, defaul
     return { groups, noCategory };
   }, [cycle.courses]);
 
+  const [isCycleExpanded, setIsCycleExpanded] = useState(defaultExpanded);
+
+  // Sync with defaultExpanded if it changes (e.g. searching)
+  React.useEffect(() => {
+    setIsCycleExpanded(defaultExpanded);
+  }, [defaultExpanded]);
+
   return (
-    <div id={cycle.id} className="mb-12 scroll-mt-24">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 border-b-2 border-[var(--color-border)] pb-4">
-        <div>
-          <h2 className="text-2xl font-bold text-[var(--color-brand-cyan)] flex items-center gap-3">
+    <div id={cycle.id} className="mb-6 scroll-mt-24 border-2 border-[var(--color-border)] rounded-2xl overflow-hidden bg-[var(--color-bg-card)] shadow-sm">
+      <button 
+        onClick={() => setIsCycleExpanded(!isCycleExpanded)}
+        className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 bg-[var(--color-brand-bg)] hover:bg-[var(--color-border)]/30 transition-colors text-left"
+      >
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-[var(--color-brand-cyan)] text-white rounded-xl shadow-sm">
+            <FolderOpen className="w-6 h-6" />
+          </div>
+          <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-text-main)] uppercase tracking-wide">
             {cycle.name}
           </h2>
         </div>
-        {cycle.price && (
-          <div className="bg-[var(--color-brand-cyan)] text-white px-4 py-1.5 rounded-full font-bold text-sm shadow-md inline-block">
-            {cycle.price}
+        <div className="flex items-center gap-4">
+          {cycle.price && (
+            <div className="bg-white dark:bg-gray-800 text-[var(--color-brand-cyan)] border border-[var(--color-brand-cyan)] px-4 py-1.5 rounded-full font-bold text-sm shadow-sm whitespace-nowrap">
+              {cycle.price}
+            </div>
+          )}
+          <div className="text-[var(--color-brand-cyan)] p-2 rounded-full border-2 border-[var(--color-border)] bg-gray-50 dark:bg-gray-800">
+            {isCycleExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
           </div>
-        )}
-      </div>
+        </div>
+      </button>
 
-      <div className="flex flex-col gap-3">
-        {groupedCourses.groups.map(group => (
+      {isCycleExpanded && (
+        <div className="p-4 sm:p-6 flex flex-col gap-3 border-t border-[var(--color-border)]">
+          {groupedCourses.groups.map(group => (
           <div key={group.category} className="border-2 border-[var(--color-border)] rounded-xl overflow-hidden bg-[var(--color-bg-main)] shadow-sm">
             <button
               onClick={() => toggleCategory(group.category)}
@@ -337,7 +374,8 @@ const CycleSection = ({ cycle, defaultExpanded = false }: { cycle: Cycle, defaul
             No hay cursos detallados para este ciclo.
           </div>
         )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

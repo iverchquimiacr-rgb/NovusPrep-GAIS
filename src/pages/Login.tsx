@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { signInWithGoogle, loginWithEmail, registerWithEmail } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { LogIn, Mail, Lock, BookOpen } from 'lucide-react';
@@ -12,6 +12,7 @@ export const Login: React.FC = () => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   React.useEffect(() => {
     if (user && profile) {
@@ -123,10 +124,26 @@ export const Login: React.FC = () => {
               />
             </div>
           </div>
+          
+          {isRegistering && (
+            <div className="flex items-start gap-2 text-sm text-left mt-2">
+              <input
+                type="checkbox"
+                id="terms"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                className="mt-1 h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
+              />
+              <label htmlFor="terms" className="text-gray-600 dark:text-gray-400">
+                He leído y acepto los <Link to="/legal" target="_blank" className="text-[var(--color-brand-cyan)] hover:underline">Términos y Condiciones</Link> y la <Link to="/legal" target="_blank" className="text-[var(--color-brand-cyan)] hover:underline">Política de Privacidad</Link>.
+              </label>
+            </div>
+          )}
+
           <button
             type="submit"
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-2 bg-[var(--color-brand-cyan)] hover:bg-[var(--color-brand-deep)] text-white font-medium py-3 px-4 rounded-xl transition-all shadow-sm disabled:opacity-70"
+            disabled={loading || (isRegistering && !termsAccepted)}
+            className="w-full flex items-center justify-center gap-2 bg-[var(--color-brand-cyan)] hover:bg-[var(--color-brand-deep)] text-white font-medium py-3 px-4 rounded-xl transition-all shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {loading ? 'Procesando...' : (isRegistering ? 'Registrarse' : 'Iniciar Sesión')}
           </button>

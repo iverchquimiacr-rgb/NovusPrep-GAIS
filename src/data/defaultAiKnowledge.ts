@@ -1,11 +1,12 @@
 export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - CICLO ANUAL: S/.15
-- CICLO CEPRUNSA QUINTOS: S/.7
-- CICLO REPASO: S/.7
+- CICLO CEPRUNSA QUINTOS: S/.8
+- CICLO REPASO: S/.8
 - CICLO VERANO (Biomédicas, Ingenierías, Sociales): S/.9
-- EXÁMENES DE ADMISIÓN: S/.8
+- EXÁMENES DE ADMISIÓN: S/.7
 - LIBROS: S/.15
-- TOMOS CEPRUNSA: S/.4
+- RESÚMENES: S/.8
+- TOMOS CEPRUNSA: S/.5
 
 ---
 
@@ -292,7 +293,7 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 
 ---
 
-## Ciclo Ceprunsa quintos (S/.7)
+## Ciclo Ceprunsa quintos (S/.8)
 
 ### Anato 1
 - [Teoría] Ácidos nucleicos
@@ -429,7 +430,7 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 
 ---
 
-## Ciclo Repaso (S/.7)
+## Ciclo Repaso (S/.8)
 
 ### Anato 1
 - [Práctica] [Teoría] Ácidos nucléicos
@@ -1286,7 +1287,7 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 
 ---
 
-## Exámenes de Admisión (S/.8)
+## Exámenes de Admisión (S/.7)
 
 ### Proceso 2026
 - [Material] Ceprequintos
@@ -1321,7 +1322,7 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 
 ---
 
-## Tomos Ceprunsa proceso 2026 (S/.4)
+## Tomos Ceprunsa (S/.5)
 - [Material] [Teoría] Biología
 - [Material] [Teoría] Cívica
 - [Material] [Teoría] Filosofía
@@ -1336,4 +1337,11 @@ export const DEFAULT_AI_KNOWLEDGE = `# PRECIOS Y PLANES (NOVUS PREP)
 - [Material] [Teoría] Química
 - [Material] [Teoría] Raz Lógico
 - [Material] [Teoría] Raz Matemático
+
+---
+
+## Resúmenes (S/.8)
+- [Teoría] Resúmenes de ciencias
+- [Teoría] Resúmenes de letras
+- [Teoría] Resúmenes de matemáticas
 `;

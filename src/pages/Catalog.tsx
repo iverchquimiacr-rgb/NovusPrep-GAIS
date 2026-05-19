@@ -87,6 +87,7 @@ export const Catalog: React.FC = () => {
       await updateDoc(userRef, {
         paymentType: selectedPlan,
         baseAmount: calculateTotal(),
+        planStartDate: new Date().toISOString(),
         purchasedFolders: selectedPlan === 'Personalizado' ? selectedFolders.map(id => PRODUCTS.find(p => p.id === id)?.nombre) : ['Todas'],
         mustChoosePlan: false,
         paymentConfirmed: 'Pendiente'
@@ -150,12 +151,12 @@ export const Catalog: React.FC = () => {
                   {plan.name}
                   {plan.id === 'General' && (
                     <span className="ml-2 inline-block bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-1 rounded-full align-middle">
-                      Ahorra S/. 15.00
+                      Ahorra un 33%
                     </span>
                   )}
                   {plan.id === 'Mensual' && (
                     <span className="ml-2 inline-block bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-1 rounded-full align-middle">
-                      Ahorra S/. 1.00 por mes
+                      Ahorra un 25%
                     </span>
                   )}
                 </h3>
@@ -203,7 +204,7 @@ export const Catalog: React.FC = () => {
                   <div 
                     key={folder.id} 
                     onClick={() => handleFolderToggle(folder.id)}
-                    className={`card-base p-6 rounded-2xl border-2 w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] cursor-pointer transition-all ${isSelected ? 'border-[var(--color-brand-cyan)] bg-blue-50/50 dark:bg-blue-900/10 shadow-[0_0_20px_rgba(6,182,212,0.15)] scale-[1.02]' : 'border-transparent hover:border-[var(--color-brand-cyan)]/30 hover:scale-[1.02]'}`}
+                    className={`card-base p-6 rounded-2xl border-2 w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] cursor-pointer transition-all flex flex-col ${isSelected ? 'border-[var(--color-brand-cyan)] bg-blue-50/50 dark:bg-blue-900/10 shadow-[0_0_20px_rgba(6,182,212,0.15)] scale-[1.02]' : 'border-transparent hover:border-[var(--color-brand-cyan)]/30 hover:scale-[1.02]'}`}
                   >
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex items-center gap-3">
@@ -216,11 +217,16 @@ export const Catalog: React.FC = () => {
                         {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
                       </div>
                     </div>
-                    <p className="text-sm text-[var(--color-text-muted)] mt-2 mb-4 line-clamp-3" title={folder.descripcion}>{folder.descripcion}</p>
+                    <p className="text-sm text-[var(--color-text-muted)] mt-2 mb-4 grow" title={folder.descripcion}>{folder.descripcion}</p>
                     <div className="flex justify-between items-center mt-auto">
                       <span className="inline-block bg-orange-50 dark:bg-orange-900/20 text-[var(--color-brand-orange)] font-bold px-3 py-1.5 rounded-lg text-sm">
                         S/. {folder.precio.toFixed(2)}
                       </span>
+                      {folder.nombre.toLowerCase().includes('resúmenes') && (
+                        <span className="inline-block bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                          Aún en proceso
+                        </span>
+                      )}
                     </div>
                   </div>
                 );

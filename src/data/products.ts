@@ -13,7 +13,7 @@ export const PRODUCTS: Product[] = [
     nombre: "General",
     precio: 50,
     link: "https://drive.google.com/drive/folders/1o5hadWv2pt8ZHETlTOHH1gYXzZaItKMz?usp=sharing",
-    descripcion: "Drive completo (conjunto de todas las demás carpetas) con todas las fotos y material adicional. Ideal para tener todo listo para estudiar.",
+    descripcion: "Conjunto de todas las demás carpetas con todo lo que contienen. Ideal para tener todo listo para estudiar.",
     vendible: true
   },
   {
@@ -21,15 +21,15 @@ export const PRODUCTS: Product[] = [
     nombre: "Anual",
     precio: 15,
     link: "https://drive.google.com/drive/folders/1_5aho-R87aDUrysHZyXKhcXJeXLqOMnP?usp=sharing",
-    descripcion: "Fotos del anual turno tarde y prácticas físicas. Ideal para sacar una buena base en todos los cursos.",
+    descripcion: "Lo mejor si buscas una base amplia en la mayoría de cursos. Ideal para tener teoría y luego pasarte a la práctica.",
     vendible: true
   },
   {
     id: 3,
     nombre: "Ciclo repaso",
-    precio: 7,
+    precio: 8,
     link: "https://drive.google.com/drive/folders/11yW7_PkDaDH0wgnuQO3Yh9p7iU9DSNGi?usp=sharing",
-    descripcion: "Prácticas de diferentes cursos. Ideal si lo que buscas prácticas, no teoría.",
+    descripcion: "Prácticas de diferentes cursos. Ideal si lo que buscas es prácticas, no teoría. Funciona bien en conjunto con el Ciclo Ceprunsa Quintos.",
     vendible: true
   },
   {
@@ -43,9 +43,9 @@ export const PRODUCTS: Product[] = [
   {
     id: 5,
     nombre: "Exámenes de admisión",
-    precio: 8,
+    precio: 7,
     link: "https://drive.google.com/drive/folders/15ZXP88JEOd_OaYkEiZJvpcS32AATfAN3",
-    descripcion: "Exámenes de admisión. Algunos cuentan con resolución. Ideal para hacer simulacros y ver qué temas son los que más vienen usualmente.",
+    descripcion: "Exámenes de diferentes universidades. Algunos cuentan con resolución. Ideal para ponerte a prueba y comprobar qué temas son los que más vienen.",
     vendible: true
   },
   {
@@ -53,23 +53,31 @@ export const PRODUCTS: Product[] = [
     nombre: "Libros",
     precio: 15,
     link: "https://drive.google.com/drive/folders/1Y5-enVuNpStITufwUxZj4GIfIVrR3jGG",
-    descripcion: "Libros en PDF para aprender. Algunos son libros hechos por profesores de academia por lo que van directo al grano y con lo que necesitas para ingresar.",
+    descripcion: "Libros en PDF para aprender. Sus autores los desarrollaron con la información clave y directa para asegurar tu ingreso.",
     vendible: true
   },
   {
     id: 7,
     nombre: "Tomos ceprunsa",
-    precio: 4,
+    precio: 5,
     link: "https://drive.google.com/drive/folders/10Lcb4bobnUeJGLNBJ1eevXKkDQHj9LX9",
-    descripcion: "Tomos ceprunsa para sacar buena base con la información que da la misma universidad.",
+    descripcion: "Tomos de la UNSA para sacar buena base con la información que da la misma universidad. Ideal si te preparas para un ceprunsa o un ceprequintos.",
+    vendible: true
+  },
+  {
+    id: 8,
+    nombre: "Resúmenes",
+    precio: 8,
+    link: "", // You'll need to set the actual link later
+    descripcion: "(Aún en construcción) Resúmenes de diferentes cursos. Ideal para ver los trucos de algunos profesores.",
     vendible: true
   },
   {
     id: 9,
     nombre: "Ciclo ceprequintos",
-    precio: 7,
+    precio: 8,
     link: "https://drive.google.com/drive/folders/1RcT3AD1x5y-bU5fPvpkOdej5d8-4IX1F?usp=sharing",
-    descripcion: "Pizarras de clases de todo el ciclo ceprequintos turno tarde que contiene los temas del temario actualizado de los cursos que hay en la carpeta. Ideal para estudiar basándose en los tomos. Se complementa con las prácticas del Ciclo repaso.",
+    descripcion: "Lo mejor para tener una buena base que va directamente a lo importante. Se complementa con las prácticas del Ciclo repaso.",
     vendible: true
   }
 ];
@@ -85,20 +93,20 @@ export const PLANS: Plan[] = [
   { 
     id: 'Semanal', 
     name: 'Plan Semanal', 
-    price: 1.50, 
+    price: 2.00, 
     features: ['Acceso a todas las carpetas', 'Duración de 7 días', 'Actualizaciones en tiempo real'] 
   },
   { 
     id: 'Mensual', 
     name: 'Plan Mensual', 
-    price: 5.00, 
+    price: 6.00, 
     features: ['Acceso a todas las carpetas', 'Duración de 30 días', 'Actualizaciones en tiempo real'] 
   },
   { 
     id: 'General', 
     name: 'Plan General', 
     price: 50.00, 
-    features: ['Acceso de por vida a todas las carpetas', 'Pago único', 'Ahorro de S/. 15.00'] 
+    features: ['Acceso de por vida a todas las carpetas', 'Pago único', 'Ahorro un 33%'] 
   },
   { 
     id: 'Personalizado', 

@@ -1,10 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, BookOpen, Search, ChevronDown, ChevronUp, 
   Book, PenTool, Beaker, Calculator, Brain, Globe, 
-  Map, Atom, MessageSquare, Shield, FolderOpen, ChevronRight, Moon, Sun, ArrowUp
+  Map, Atom, MessageSquare, Shield, FolderOpen, ChevronRight, Moon, Sun, ArrowUp, Loader2
 } from 'lucide-react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import { DEFAULT_AI_KNOWLEDGE } from '../data/defaultAiKnowledge';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -87,8 +89,13 @@ const parseKnowledge = (markdown: string): Cycle[] => {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     
-    // Skip empty lines or top headings
-    if (!line.trim() || line.startsWith('# PRECIOS') || line.startsWith('# CATÁLOGO') || line.match(/^- \w/)) {
+    // Skip empty lines or specific separators
+    if (!line.trim() || line.startsWith('---') || line.startsWith('# PRECIOS') || line.startsWith('# CATÁLOGO')) {
+      continue;
+    }
+
+    // Skip price list bullet points at the very top (before any cycle begins)
+    if (!currentCycle && !line.startsWith('## ')) {
       continue;
     }
 
@@ -217,7 +224,21 @@ const TopicRow = ({ topic }: { topic: Topic }) => {
   );
 };
 
-const CourseAccordion = ({ course, isExpanded, onToggle }: { course: Course, isExpanded: boolean, onToggle: () => void }) => {
+const getCategoryIcon = (category: string) => {
+  const nameL = category.toLowerCase();
+  if (nameL.includes('biomédicas') || nameL.includes('biomedica')) return <Atom className="w-5 h-5" />;
+  if (nameL.includes('ingenierías') || nameL.includes('ingenieria')) return <Calculator className="w-5 h-5" />;
+  if (nameL.includes('sociales')) return <Globe className="w-5 h-5" />;
+  return <FolderOpen className="w-5 h-5" />;
+};
+
+const CourseAccordion = ({ course, cycleName, isExpanded, onToggle }: { course: Course, cycleName: string, isExpanded: boolean, onToggle: () => void }) => {
+  const isExamenes = cycleName.toLowerCase().includes('exámenes');
+  const isTomos = cycleName.toLowerCase().includes('tomos');
+  let label = "temas";
+  if (isExamenes) label = "exámenes";
+  if (isTomos) label = "cursos";
+
   return (
     <div className="border border-[var(--color-border)] rounded-xl overflow-hidden bg-[var(--color-bg-card)] transition-all hover:border-[var(--color-brand-cyan)]/50 shadow-sm">
       <button 
@@ -230,7 +251,7 @@ const CourseAccordion = ({ course, isExpanded, onToggle }: { course: Course, isE
           </div>
           <span className="font-semibold text-[var(--color-text-main)]">{course.name}</span>
           <span className="text-xs font-bold text-white bg-cyan-600 dark:bg-cyan-600 border border-transparent shadow-sm px-2 py-0.5 rounded-full">
-            {course.topics.length} temas
+            {course.topics.length} {label}
           </span>
         </div>
         <div className="text-[var(--color-text-muted)]">
@@ -303,12 +324,17 @@ const CycleSection = ({ cycle, defaultExpanded = false }: { cycle: Cycle, defaul
         onClick={() => setIsCycleExpanded(!isCycleExpanded)}
         className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 bg-[var(--color-brand-bg)] hover:bg-[var(--color-border)]/30 transition-colors text-left"
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
           <div className="p-3 bg-[var(--color-brand-cyan)] text-white rounded-xl shadow-sm">
             <FolderOpen className="w-6 h-6" />
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-text-main)] uppercase tracking-wide">
+          <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-text-main)] uppercase tracking-wide flex items-center gap-2 flex-wrap">
             {cycle.name}
+            {cycle.name.toLowerCase().includes('resúmenes') && (
+              <span className="inline-block bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-xs sm:text-sm font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                Aún en proceso
+              </span>
+            )}
           </h2>
         </div>
         <div className="flex items-center gap-4">
@@ -333,7 +359,7 @@ const CycleSection = ({ cycle, defaultExpanded = false }: { cycle: Cycle, defaul
             >
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-[var(--color-brand-cyan)] text-white rounded-lg shadow-sm">
-                  <FolderOpen className="w-5 h-5" />
+                  {getCategoryIcon(group.category)}
                 </div>
                 <span className="font-bold text-lg text-[var(--color-text-main)]">{group.category}</span>
                 <span className="text-xs font-bold text-[var(--color-text-muted)] bg-[var(--color-bg-card)] border border-[var(--color-border)] px-2 py-0.5 rounded-full">
@@ -351,6 +377,7 @@ const CycleSection = ({ cycle, defaultExpanded = false }: { cycle: Cycle, defaul
                   <CourseAccordion 
                     key={course.id} 
                     course={course} 
+                    cycleName={cycle.name}
                     isExpanded={!!expandedCourses[course.id] || defaultExpanded}
                     onToggle={() => toggleCourse(course.id)}
                   />
@@ -364,6 +391,7 @@ const CycleSection = ({ cycle, defaultExpanded = false }: { cycle: Cycle, defaul
           <CourseAccordion 
             key={course.id} 
             course={course} 
+            cycleName={cycle.name}
             isExpanded={!!expandedCourses[course.id] || defaultExpanded}
             onToggle={() => toggleCourse(course.id)}
           />
@@ -386,6 +414,28 @@ export const Temario: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [knowledgeText, setKnowledgeText] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchKnowledge = async () => {
+      try {
+        const docRef = doc(db, 'settings', 'ai_knowledge');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists() && docSnap.data().content) {
+          setKnowledgeText(docSnap.data().content);
+        } else {
+          setKnowledgeText(DEFAULT_AI_KNOWLEDGE);
+        }
+      } catch (error) {
+        console.error("Error fetching knowledge:", error);
+        setKnowledgeText(DEFAULT_AI_KNOWLEDGE);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchKnowledge();
+  }, []);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -412,7 +462,10 @@ export const Temario: React.FC = () => {
     }
   };
 
-  const cycles = useMemo(() => parseKnowledge(DEFAULT_AI_KNOWLEDGE), []);
+  const cycles = useMemo(() => {
+    if (!knowledgeText) return [];
+    return parseKnowledge(knowledgeText);
+  }, [knowledgeText]);
 
   const filteredCycles = useMemo(() => {
     if (!searchTerm.trim()) return cycles;
@@ -480,8 +533,8 @@ export const Temario: React.FC = () => {
           </p>
         </div>
 
-        <div className="max-w-2xl mx-auto mb-10 sticky top-4 z-10">
-          <div className="relative group">
+        <div className={`max-w-2xl mx-auto mb-10 sticky top-4 z-10 transition-opacity duration-300 ${showScrollTop ? 'opacity-60 hover:opacity-100 focus-within:opacity-100' : 'opacity-100'}`}>
+          <div className="relative group shadow-lg rounded-xl">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[var(--color-brand-cyan)] transition-colors">
               <Search className="w-5 h-5" />
             </div>
@@ -507,7 +560,7 @@ export const Temario: React.FC = () => {
           
           {/* Quick Navigation Chips */}
           {!searchTerm && cycles.length > 0 && (
-            <div className="mt-4 flex flex-wrap justify-center gap-2">
+            <div className={`mt-4 flex flex-wrap justify-center gap-2 overflow-hidden transition-all duration-300 ease-in-out ${showScrollTop ? 'max-h-0 opacity-0 m-0' : 'max-h-96 opacity-100'}`}>
               {cycles.map(cycle => (
                 <button
                   key={`nav-${cycle.id}`}
@@ -525,7 +578,12 @@ export const Temario: React.FC = () => {
         </div>
 
         <div className="space-y-4">
-          {filteredCycles.length === 0 ? (
+          {loading ? (
+            <div className="flex flex-col flex-1 items-center justify-center p-12 mt-8">
+              <Loader2 className="w-12 h-12 text-[var(--color-brand-cyan)] animate-spin mb-4" />
+              <p className="text-[var(--color-text-muted)] font-medium">Cargando catálogo...</p>
+            </div>
+          ) : filteredCycles.length === 0 ? (
             <div className="text-center py-20 bg-[var(--color-bg-card)] rounded-3xl border border-[var(--color-border)] shadow-sm">
               <div className="bg-[var(--color-brand-bg)] w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 border border-[var(--color-border)]/50">
                 <Search className="w-10 h-10 text-[var(--color-text-muted)]" />

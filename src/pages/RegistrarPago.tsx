@@ -7,6 +7,8 @@ import { collection, addDoc, doc, updateDoc, query, where, onSnapshot } from 'fi
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Upload, ArrowLeft, CheckCircle, AlertCircle, Moon, Sun } from 'lucide-react';
 
+import { calculateDynamicBaseAmount } from '../utils/paymentUtils';
+
 export const RegistrarPago: React.FC = () => {
   const { user, profile } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -34,7 +36,7 @@ export const RegistrarPago: React.FC = () => {
     return () => unsubscribe();
   }, [user]);
 
-  const baseAmount = profile?.baseAmount || 0;
+  const baseAmount = calculateDynamicBaseAmount(profile);
   const discount = profile?.discountApplied || 0;
   const totalToPay = baseAmount * (1 - discount / 100);
   const rawPendingBalance = Math.max(0, totalToPay - totalPaid);

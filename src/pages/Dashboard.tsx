@@ -18,6 +18,8 @@ interface Notification {
   discount?: number;
 }
 
+import { calculateDynamicBaseAmount } from '../utils/paymentUtils';
+
 export const Dashboard: React.FC = () => {
   const { profile, user } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -123,7 +125,7 @@ export const Dashboard: React.FC = () => {
   const needsPlan = profile?.mustChoosePlan;
 
   // Pagos calculations
-  const baseAmount = profile?.baseAmount || 0;
+  const baseAmount = calculateDynamicBaseAmount(profile);
   const discount = profile?.discountApplied || 0;
   const totalToPay = baseAmount * (1 - discount / 100);
   const rawPendingBalance = Math.max(0, totalToPay - totalPaid);
@@ -430,7 +432,7 @@ export const Dashboard: React.FC = () => {
                   </div>
                   <div className="flex justify-between border-b border-[var(--color-border)] pb-2">
                     <span className="text-[var(--color-text-muted)]">Deuda / Monto Base</span>
-                    <span className="font-medium text-[var(--color-text-main)]">S/. {profile?.baseAmount || 0}</span>
+                    <span className="font-medium text-[var(--color-text-main)]">S/. {baseAmount.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between pb-2">
                     <span className="text-[var(--color-text-muted)]">Descuento Aplicado</span>
@@ -581,7 +583,7 @@ export const Dashboard: React.FC = () => {
                           </div>
                           <h4 className="font-bold text-[var(--color-text-main)] leading-tight">{folder.nombre}</h4>
                         </div>
-                        <p className="text-sm text-[var(--color-text-muted)] mb-4 flex-1 line-clamp-3" title={folder.descripcion}>
+                        <p className="text-sm text-[var(--color-text-muted)] mb-4 flex-1" title={folder.descripcion}>
                           {folder.descripcion}
                         </p>
                         <a

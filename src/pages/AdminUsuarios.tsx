@@ -18,6 +18,8 @@ interface UserData {
   assignedFolders?: number;
 }
 
+import { calculateDynamicBaseAmount } from '../utils/paymentUtils';
+
 export const AdminUsuarios: React.FC = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
@@ -207,7 +209,7 @@ export const AdminUsuarios: React.FC = () => {
                 </div>
                 <div className="flex justify-between border-b border-[var(--color-border)] pb-2">
                   <span className="text-[var(--color-text-muted)]">Deuda / Monto Base</span>
-                  <span className="font-medium text-[var(--color-text-main)]">S/. {selectedUser.baseAmount || 0}</span>
+                  <span className="font-medium text-[var(--color-text-main)]">S/. {calculateDynamicBaseAmount(selectedUser)}</span>
                 </div>
                 <div className="flex justify-between border-b border-[var(--color-border)] pb-2">
                   <span className="text-[var(--color-text-muted)]">Descuento</span>

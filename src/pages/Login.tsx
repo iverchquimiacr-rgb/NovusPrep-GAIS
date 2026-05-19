@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signInWithGoogle, loginWithEmail, registerWithEmail } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
-import { LogIn, Mail, Lock, BookOpen } from 'lucide-react';
+import { LogIn, Mail, Lock, BookOpen, Eye, EyeOff, Info } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -12,6 +12,7 @@ export const Login: React.FC = () => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
   React.useEffect(() => {
@@ -59,9 +60,13 @@ export const Login: React.FC = () => {
     } catch (error: any) {
       console.error("Email auth failed", error);
       if (error.code === 'auth/email-already-in-use') {
-        setError('Este correo ya está registrado.');
+        setError('Este correo ya está registrado. Intenta iniciar sesión.');
       } else if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
         setError('Correo o contraseña incorrectos.');
+      } else if (error.code === 'auth/weak-password') {
+        setError('La contraseña es muy débil. Debe tener al menos 6 caracteres.');
+      } else if (error.code === 'auth/operation-not-allowed') {
+        setError('El registro con correo no está habilitado actualmente. Por favor, utiliza Google.');
       } else {
         setError('Error al procesar la solicitud. Intenta nuevamente.');
       }
@@ -81,13 +86,19 @@ export const Login: React.FC = () => {
             e.currentTarget.style.display = 'none';
           }}
         />
-        <p className="text-gray-500 dark:text-gray-400 mb-6">
+        <p className="text-gray-500 dark:text-gray-400 mb-4">
           {isRegistering ? 'Crea una cuenta nueva' : 'Inicia sesión para acceder a tu cuenta'}
         </p>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm rounded-xl border border-red-200 dark:border-red-800">
-            {error}
+          <div className="mb-4 space-y-2">
+            <div className="p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm rounded-xl border border-red-200 dark:border-red-800">
+              {error}
+            </div>
+            <div className="flex items-start gap-2 text-xs text-left bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-3 rounded-xl border border-blue-100 dark:border-blue-800">
+              <Info className="w-4 h-4 shrink-0 mt-0.5" />
+              <p>Si tienes problemas para {isRegistering ? 'registrarte' : 'iniciar sesión'} manualmente, ¡intenta directamente con Google más abajo! Es seguro y más rápido. Si sigues teniendo inconvenientes, por favor contáctanos a novusprep@gmail.com.</p>
+            </div>
           </div>
         )}
         
@@ -102,7 +113,7 @@ export const Login: React.FC = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--color-brand-cyan)] focus:border-transparent outline-none transition-all"
                 placeholder="tu@correo.com"
                 required
               />
@@ -115,13 +126,25 @@ export const Login: React.FC = () => {
                 <Lock className="h-5 w-5 text-gray-400" />
               </div>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"
+                className="block w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--color-brand-cyan)] focus:border-transparent outline-none transition-all"
                 placeholder="••••••••"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[var(--color-brand-cyan)] focus:outline-none transition-colors"
+                title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
             </div>
           </div>
           

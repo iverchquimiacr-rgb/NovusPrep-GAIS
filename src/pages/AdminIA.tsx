@@ -104,7 +104,17 @@ export const AdminIA: React.FC = () => {
                 className="w-full h-[500px] p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-main)] text-[var(--color-text-main)] focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none resize-y font-mono text-sm leading-relaxed"
                 placeholder="Pega aquí tu catálogo de carpetas y temas..."
               />
-              <div className="mt-6 flex justify-end">
+              <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <button
+                  onClick={() => {
+                    if (window.confirm("¿Estás seguro de restaurar el catálogo por defecto? Esto borrará tus cambios manuales actuales.")) {
+                      setContent(DEFAULT_AI_KNOWLEDGE);
+                    }
+                  }}
+                  className="flex items-center gap-2 text-red-500 hover:text-red-600 px-4 py-2 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-xl transition-colors font-medium text-sm"
+                >
+                  Restaurar por defecto
+                </button>
                 <button
                   onClick={handleSave}
                   disabled={saving}
